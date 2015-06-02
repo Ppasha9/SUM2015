@@ -126,6 +126,7 @@ LRESULT CALLBACK MyWindowFunc( HWND hWnd, UINT Msg,
   HDC hDC;         /* Display context */
   static INT w, h, x, y;
   POINT pt;        /* The point of cursor */
+  PAINTSTRUCT ps;
   INT CEyeF = 240, CEyeFy = 240, CEyeS = 560, CEyeSy = 240, R = 65;
   INT Rx1, Ry1, Rx2, Ry2; /* The coordinats of center */
 
@@ -134,12 +135,18 @@ LRESULT CALLBACK MyWindowFunc( HWND hWnd, UINT Msg,
   case WM_CREATE:
     SetTimer(hWnd, 111, 50, NULL);
     return 0;
+
   case WM_SIZE:
     w = LOWORD(lParam);
     h = HIWORD(lParam);
     return 0;
+
   case WM_TIMER:
-    hDC = GetDC(hWnd);
+    InvalidateRect(hWnd, NULL, FALSE);
+    return 0;
+
+  case WM_PAINT:
+    hDC = BeginPaint(hWnd, &ps);
 
     GetCursorPos(&pt);
     ScreenToClient(hWnd, &pt);
@@ -185,8 +192,35 @@ LRESULT CALLBACK MyWindowFunc( HWND hWnd, UINT Msg,
     DrawEye(hDC, CEyeF + Rx1 - 5, CEyeFy + Ry1 - 5, CEyeF + Rx1 + 5, CEyeFy + Ry1 + 5);
     DrawEye(hDC, CEyeS + Rx2 - 5, CEyeSy + Ry2 - 5, CEyeS + Rx2 + 5, CEyeSy + Ry2 + 5);
 
-    ReleaseDC(hWnd, hDC);
+    EndPaint(hWnd, &ps);
     return 0;
+
+  case WM_KEYDOWN:
+    if (wParam == 27)
+      DestroyWindow(hWnd);
+    return 0;
+
+  case WM_MOUSEMOVE:
+    x = LOWORD(lParam);
+    y = HIWORD(lParam);
+
+    hDC = GetDC(hWnd);
+
+    SelectObject(hDC, GetStockObject(DC_PEN));
+    SelectObject(hDC, GetStockObject(DC_BRUSH));
+    SetDCBrushColor(hDC, RGB(255, 255, 255));
+    SetDCPenColor(hDC, RGB(0, 0, 0));
+
+    if (wParam & MK_LBUTTON)
+      Ellipse(hDC, x - 5, y - 5, x + 5, y + 5);
+
+    return 0;
+
+  case WM_CLOSE:
+    if (MessageBox(hWnd, "Are you sure to exit this program?", "Exit", MB_YESNO | MB_ICONQUESTION) == IDNO)
+      return 0;
+    break;
+
   case WM_DESTROY:
     KillTimer(hWnd, 111);
     PostMessage(hWnd, WM_QUIT, 0, 0);
