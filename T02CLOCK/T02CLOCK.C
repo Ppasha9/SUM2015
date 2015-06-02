@@ -4,9 +4,12 @@
  * PURPOSE: WinAPI clock visualization.
  */
 
+#pragma warning(disable: 4244)
+
 #include <time.h>
 #include <string.h>
 #include <math.h>
+#include <stdio.h>
 
 #include <windows.h>
 
@@ -137,15 +140,29 @@ VOID FlipFullScreen( HWND hWnd )
 } /* End of 'FlipFullScreen' function */
 
 
+/* Функция рисования часовых стрелок.
+ * АРГУМЕНТЫ:
+ *   - дескриптор контекста окна:
+ *       HDC hDC;
+ *   - абсцисса точки, из которой рисуется стрелка:
+ *       INT X1
+ *   - ордината точки, из которой рисуется стрелка:
+ *       INT Y1
+ *   - длина стрелки:
+ *       INT Len;
+ *   - угол, на который поворачивается сттрелка:
+ *       DOUBLE Angle;
+ * ВОЗРАЩАЕМОЕ ЗНАЧЕНИЕ: Нет.
+ */
 VOID DrawArrow( HDC hDC, INT X1, INT Y1, INT Len, DOUBLE Angle )
 {
   DOUBLE
     si = sin(PD6_PI * Angle / 180),
     co = cos(PD6_PI * Angle / 180);
-
+ 
   MoveToEx(hDC, X1, Y1, NULL);
   LineTo(hDC, X1 + si * Len, Y1 - co * Len);
-}
+} /* End of 'DrawArrow' function */
 
 
 /* Функция обработки сообщения окна.
@@ -165,14 +182,11 @@ LRESULT CALLBACK MyWindowFunc( HWND hWnd, UINT Msg,
                                WPARAM wParam, LPARAM lParam )
 {
   HDC hDC;
-  INT x, y, i, RS = 300, RM = 270, RH = 150;
+  INT RS = 300, RM = 270, RH = 150;
   CREATESTRUCT *cs;
-  POINT pt;
-  PAINTSTRUCT ps;
   SYSTEMTIME st, TimeLine;
   CHAR Buf[100];
   HFONT hFnt, hOldFnt;
-  RECT rc;
   HPEN hPen;
   static BITMAP bm;
   static HBITMAP hBm, hBmLogo;
@@ -225,14 +239,21 @@ LRESULT CALLBACK MyWindowFunc( HWND hWnd, UINT Msg,
       hMemDCLogo, 0, 0, bm.bmWidth, bm.bmHeight, SRCCOPY);
 
     /* Draw clock's lines */
-    hPen = CreatePen(PS_SOLID, 3, RGB(0, 0, 0));
-    SelectObject(hMemDC, hPen);
-
     GetLocalTime(&TimeLine);
-    DrawArrow(hMemDC, w / 2, h / 2, RS, TimeLine.wSecond * 6);
-    DrawArrow(hMemDC, w / 2, h / 2, RM, TimeLine.wMinute * 6);
-    DrawArrow(hMemDC, w / 2, h / 2, RH, (TimeLine.wHour % 12) * 30);
 
+    hPen = CreatePen(PS_SOLID, 2, RGB(255, 0, 0));
+    SelectObject(hMemDC, hPen);
+    DrawArrow(hMemDC, w / 2, h / 2, RS, TimeLine.wSecond * 6);
+    DeleteObject(hPen);
+
+    hPen = CreatePen(PS_SOLID, 2, RGB(0, 255, 0));
+    SelectObject(hMemDC, hPen);
+    DrawArrow(hMemDC, w / 2, h / 2, RM, TimeLine.wMinute * 6);
+    DeleteObject(hPen);
+
+    hPen = CreatePen(PS_SOLID, 2, RGB(0, 0, 255));
+    SelectObject(hMemDC, hPen);
+    DrawArrow(hMemDC, w / 2, h / 2, RH, (TimeLine.wHour % 12) * 30);
     DeleteObject(hPen);
 
     /* Writing the time at the moment */
@@ -241,14 +262,19 @@ LRESULT CALLBACK MyWindowFunc( HWND hWnd, UINT Msg,
       CLIP_DEFAULT_PRECIS, PROOF_QUALITY,
       VARIABLE_PITCH | FF_ROMAN, "");
     hOldFnt = SelectObject(hMemDC, hFnt);
+
     GetLocalTime(&st);
-    SetTextColor(hMemDC, RGB(0, 255, 0));
+    SetTextColor(hMemDC, RGB(59, 255, 230));
     SetBkColor(hMemDC, RGB(255, 255, 0));
     SetBkMode(hMemDC, TRANSPARENT);
-    TextOut(hMemDC, w / 2 - 200, h / 2 + 100, Buf,
-      sprintf(Buf, "%02d:%02d:%02d (%02d.%02d.%d)",
-        st.wHour, st.wMinute, st.wSecond,
+
+    TextOut(hMemDC, w / 2 - 210, h / 2 + 400, Buf,
+      sprintf(Buf, "Время: %02d:%02d:%02d",
+        st.wHour, st.wMinute, st.wSecond));
+    TextOut(hMemDC, w / 2 - 210, h / 2 + 450, Buf,
+      sprintf(Buf, "Дата: %02d.%02d.%d",
         st.wDay, st.wMonth, st.wYear));
+
 
     DeleteObject(hFnt);
 
