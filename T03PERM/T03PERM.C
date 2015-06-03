@@ -8,11 +8,11 @@
 #include <conio.h>
 #include <windows.h>
 
-#define PD6_N 5
+#define PD6_N 4
 
 INT PD6_P[PD6_N];
 INT Parity = 0;
-
+FILE *F;
 
 /* Функция заменяющая два значения.
  * АРГУМЕНТЫ:
@@ -39,7 +39,6 @@ VOID Swap( INT *A, INT *B )
  */   
 VOID WriteToFile( INT A )
 {
-  FILE *F;
   static INT k = 0;
 
   if ((F = fopen("Res.log", "a")) != NULL)
@@ -47,28 +46,12 @@ VOID WriteToFile( INT A )
     k++;
     fprintf(F, "%d ", A);
 
-    if ((k % 5) == 0)
+    if ((k % PD6_N) == 0)
       fprintf(F, "- %s\n", Parity ? "Odd" : "Even");
 
     fclose(F);
   }
 } /* End of 'WriteToFile' function */
-
-
-/* Функция подсчета инверсий.
- * АРГУМЕНТЫ: Нет.
- * ВОЗВРАЩАЕМОЕ ЗНАЧЕНИЕ: Нет.
- */   
-INT CountParity( VOID )
-{
-  INT i, j, cnt = 0;
-
-  for (i = 0; i < PD6_N - 1; i++)
-    for (j = i + 1; j < PD6_N; j++)
-      cnt += PD6_P[i] > PD6_P[j];
-
-  return cnt;
-} /* End of 'CountParity' function */
 
 
 /* Функция создания перестановок с заданной позиции.
@@ -98,7 +81,7 @@ INT CountParity( VOID )
  */   
 VOID Go( INT Pos )
 {
-  INT i;
+  INT i, x, save;
 
   if (Pos == PD6_N)
   {
@@ -106,18 +89,22 @@ VOID Go( INT Pos )
       WriteToFile(PD6_P[i]);
     return;
   }
-  for (i = Pos; i < PD6_N; i++)
+
+  save = Parity;
+  Go(Pos + 1);
+  for (i = Pos + 1; i < PD6_N; i++)
   {
-    if (Pos != i)
-      Parity = !Parity;
+    Parity = !Parity;
     Swap(&PD6_P[Pos], &PD6_P[i]);
-
     Go(Pos + 1);
-
-    if (Pos != i)
-      Parity = !Parity;
-    Swap(&PD6_P[Pos], &PD6_P[i]);
   }
+
+  Parity = save;
+  x = PD6_P[Pos];
+
+  for (i = Pos + 1; i < PD6_N; i++)
+    PD6_P[i - 1] = PD6_P[i];
+  PD6_P[PD6_N - 1] = x;
 } /* End of 'Go' function */
 
 
@@ -125,6 +112,9 @@ VOID Go( INT Pos )
 VOID main( VOID )
 {
   INT i;
+
+  if ((F = fopen("Res.log", "w")) != NULL)
+    fclose(F);
 
   for (i = 0; i < PD6_N; i++)
     PD6_P[i] = i + 1;
