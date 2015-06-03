@@ -48,10 +48,9 @@ VOID WriteToFile( INT A )
     fprintf(F, "%d ", A);
 
     if ((k % 5) == 0)
-      fprintf(F, "\n");
+      fprintf(F, "- %s\n", Parity ? "Odd" : "Even");
 
     fclose(F);
-
   }
 } /* End of 'WriteToFile' function */
 
@@ -109,8 +108,14 @@ VOID Go( INT Pos )
   }
   for (i = Pos; i < PD6_N; i++)
   {
+    if (Pos != i)
+      Parity = !Parity;
     Swap(&PD6_P[Pos], &PD6_P[i]);
+
     Go(Pos + 1);
+
+    if (Pos != i)
+      Parity = !Parity;
     Swap(&PD6_P[Pos], &PD6_P[i]);
   }
 } /* End of 'Go' function */
