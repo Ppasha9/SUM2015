@@ -16,7 +16,7 @@
 /* Имя класса окна */
 #define WND_CLASS_NAME "My window class"
 
-#define PD6_PI 3.141592653583793238462643383278502884197169399375105820974944
+#define PD6_PI 3.141592653589793238462643383278502884197169399375105820974944
 
 /* Ссылка вперед */
 LRESULT CALLBACK MyWindowFunc( HWND hWnd, UINT Msg,
@@ -126,7 +126,7 @@ VOID FlipFullScreen( HWND hWnd )
 
     AdjustWindowRect(&rc, GetWindowLong(hWnd, GWL_STYLE), FALSE);
 
-    SetWindowPos(hWnd, HWND_TOP, rc.left, rc.top, rc.right - rc.left, rc.bottom - rc.top + 201,
+    SetWindowPos(hWnd, HWND_TOPMOST, rc.left, rc.top, rc.right - rc.left, rc.bottom - rc.top + 201,
       SWP_NOOWNERZORDER);
     IsFullScreen = TRUE;
   }
@@ -159,11 +159,29 @@ VOID DrawArrow( HDC hDC, INT X1, INT Y1, INT Len, DOUBLE Angle )
   DOUBLE
     si = sin(PD6_PI * Angle / 180),
     co = cos(PD6_PI * Angle / 180);
- 
+
   MoveToEx(hDC, X1, Y1, NULL);
   LineTo(hDC, X1 + si * Len, Y1 - co * Len);
 } /* End of 'DrawArrow' function */
 
+
+VOID DrawHandPoly( HDC hDC, INT Xc, INT Yc, INT L, INT W, FLOAT Angle )
+{
+  INT i;
+  POINT pnts[] =
+  {
+    {0, W}, {-W, 0}, {0, L}, {W, 0}
+  }, pntdraw[sizeof pnts / sizeof pnts[0]];
+  FLOAT si = sin(Angle), co = cos(Angle);
+
+  for (i = 0; i < sizeof pnts / sizeof pnts[0]; i++)
+  {
+    pntdraw[i].x = Xc + pnts[i].x * co - pnts[i].y * si;
+    pntdraw[i].y = Yc + pnts[i].y * co + pnts[i].x * si;
+  }
+
+  Polygon(hDC, pntdraw, sizeof pnts / sizeof pnts[0]);
+}
 
 /* Функция обработки сообщения окна.
  * АРГУМЕНТЫ:
@@ -238,25 +256,32 @@ LRESULT CALLBACK MyWindowFunc( HWND hWnd, UINT Msg,
     StretchBlt(hMemDC, w / 2 - bm.bmWidth / 2, h / 2 - bm.bmHeight / 2, bm.bmWidth, bm.bmHeight,
       hMemDCLogo, 0, 0, bm.bmWidth, bm.bmHeight, SRCCOPY);
 
-    /* Draw clock's lines */
+    /* Draw clock's arrows */
     GetLocalTime(&TimeLine);
 
     hPen = CreatePen(PS_SOLID, 2, RGB(255, 0, 0));
     SelectObject(hMemDC, hPen);
     DrawArrow(hMemDC, w / 2, h / 2, RS, TimeLine.wSecond * 6);
+    ///DrawHandPoly(hMemDC, w / 2, h / 2, RS, 5, TimeLine.wSecond * PD6_PI / 30);
     DeleteObject(hPen);
 
     hPen = CreatePen(PS_SOLID, 2, RGB(0, 255, 0));
     SelectObject(hMemDC, hPen);
+/*    SelectObject(hMemDC, GetStockObject(DC_BRUSH));
+    SelectObject(hMemDC, GetStockObject(NULL_PEN));
+    SetDCBrushColor(hMemDC, RGB(0, 255, 0));       */
     DrawArrow(hMemDC, w / 2, h / 2, RM, TimeLine.wMinute * 6);
+    ///DrawHandPoly(hMemDC, w / 2, h / 2, RM, 20, TimeLine.wMinute * PD6_PI / 30);
+    ///SelectObject(hMemDC, GetStockObject(NULL_BRUSH));
     DeleteObject(hPen);
 
     hPen = CreatePen(PS_SOLID, 2, RGB(0, 0, 255));
     SelectObject(hMemDC, hPen);
-    DrawArrow(hMemDC, w / 2, h / 2, RH, (TimeLine.wHour % 12) * 30);
+    DrawArrow(hMemDC, w / 2, h / 2, RH, ((TimeLine.wHour - 1) % 12) * 30);
+    ///DrawHandPoly(hMemDC, w / 2, h / 2, -RH, 30, ((TimeLine.wHour - 1) % 12) * PD6_PI / 6);
     DeleteObject(hPen);
 
-    /* Writing the time at the moment */
+    /* Writing the time and the date at the moment */
     hFnt = CreateFont(60, 0, 0, 0, FW_BOLD, FALSE, FALSE,
       FALSE, RUSSIAN_CHARSET, OUT_DEFAULT_PRECIS,
       CLIP_DEFAULT_PRECIS, PROOF_QUALITY,
@@ -270,7 +295,7 @@ LRESULT CALLBACK MyWindowFunc( HWND hWnd, UINT Msg,
 
     TextOut(hMemDC, w / 2 - 210, h / 2 + 400, Buf,
       sprintf(Buf, "Время: %02d:%02d:%02d",
-        st.wHour, st.wMinute, st.wSecond));
+        st.wHour - 1, st.wMinute, st.wSecond));
     TextOut(hMemDC, w / 2 - 210, h / 2 + 450, Buf,
       sprintf(Buf, "Дата: %02d.%02d.%d",
         st.wDay, st.wMonth, st.wYear));
