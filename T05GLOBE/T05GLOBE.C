@@ -19,6 +19,8 @@
 /* –исовать в режиме WireFrame или нет */
 BOOL IsWire = FALSE;
 extern INT Radius;
+BYTE *Pic;
+INT PicH = 0, PicW = 0;
 
 /* —сылка вперед */
 LRESULT CALLBACK MyWindowFunc( HWND hWnd, UINT Msg,
@@ -128,7 +130,7 @@ VOID FlipFullScreen( HWND hWnd )
 
     AdjustWindowRect(&rc, GetWindowLong(hWnd, GWL_STYLE), FALSE);
 
-    SetWindowPos(hWnd, HWND_TOPMOST, rc.left, rc.top, rc.right - rc.left, rc.bottom - rc.top + 201,
+    SetWindowPos(hWnd, HWND_TOP, rc.left, rc.top, rc.right - rc.left, rc.bottom - rc.top,
       SWP_NOOWNERZORDER);
     IsFullScreen = TRUE;
   }
@@ -163,6 +165,7 @@ LRESULT CALLBACK MyWindowFunc( HWND hWnd, UINT Msg,
   static INT w, h;
   static BITMAP bm;
   static HBITMAP hBm;
+  FILE *F;
 
   switch (Msg)
   {
@@ -173,6 +176,14 @@ LRESULT CALLBACK MyWindowFunc( HWND hWnd, UINT Msg,
     hDC = GetDC(hWnd);
     hMemDC = CreateCompatibleDC(hDC);
     ReleaseDC(hWnd, hDC);
+
+    F = fopen("PYATACK.g24", "rb");
+    fread(&PicW, 2, 1, F);
+    fread(&PicH, 2, 1, F);
+    Pic = malloc(PicW * PicH * 3);
+    fread(Pic, 3, PicW * PicH, F);
+    fclose(F);
+
     return 0;
 
   case WM_SIZE:
@@ -197,6 +208,8 @@ LRESULT CALLBACK MyWindowFunc( HWND hWnd, UINT Msg,
     SelectObject(hMemDC, GetStockObject(DC_BRUSH));
     SetDCBrushColor(hMemDC, RGB(255, 255, 255));
     Rectangle(hMemDC, 0, 0, w + 1, h + 1);
+
+
 
     SelectObject(hMemDC, GetStockObject(NULL_PEN));
     SelectObject(hMemDC, GetStockObject(DC_BRUSH));
