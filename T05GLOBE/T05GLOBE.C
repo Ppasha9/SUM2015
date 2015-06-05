@@ -1,10 +1,8 @@
-/* FILE NAME: T02CLOCK.C
+/* FILE NAME: T05GLOBE.C
  * PROGRAMMER: PD6
- * DATE: 02.06.2015
- * PURPOSE: WinAPI clock visualization.
+ * DATE: 04.06.2015
+ * PURPOSE: WinAPI sphere drawing.
  */
-
-#pragma warning(disable: 4244)
 
 #include <time.h>
 #include <string.h>
@@ -13,10 +11,14 @@
 
 #include <windows.h>
 
+#include "globe.h"
+
 /* Имя класса окна */
 #define WND_CLASS_NAME "My window class"
 
-#define PD6_PI 3.141592653589793238462643383278502884197169399375105820974944
+/* Рисовать в режиме WireFrame или нет */
+BOOL IsWire = FALSE;
+extern INT Radius;
 
 /* Ссылка вперед */
 LRESULT CALLBACK MyWindowFunc( HWND hWnd, UINT Msg,
@@ -67,10 +69,10 @@ INT WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance,
   /* Создание окна */
   hWnd =
     CreateWindow(WND_CLASS_NAME,    /* Имя класса окна */
-      "Title",                      /* Заголовок окна */
+      "Sphera",                      /* Заголовок окна */
       WS_OVERLAPPEDWINDOW,          /* Стили окна - окно общего вида */
       CW_USEDEFAULT, CW_USEDEFAULT, /* Позиция окна (x, y) - по умолчанию */
-      500, 500,                     /* Размеры окна (w, h) - по умолчанию */
+      CW_USEDEFAULT, CW_USEDEFAULT, /* Размеры окна (w, h) - по умолчанию */
       NULL,                         /* Дескриптор родительского окна */
       NULL,                         /* Дескриптор загруженного меню */
       hInstance,                    /* Дескриптор приложения */
@@ -140,49 +142,6 @@ VOID FlipFullScreen( HWND hWnd )
 } /* End of 'FlipFullScreen' function */
 
 
-/* Функция рисования часовых стрелок.
- * АРГУМЕНТЫ:
- *   - дескриптор контекста окна:
- *       HDC hDC;
- *   - абсцисса точки, из которой рисуется стрелка:
- *       INT X1
- *   - ордината точки, из которой рисуется стрелка:
- *       INT Y1
- *   - длина стрелки:
- *       INT Len;
- *   - угол, на который поворачивается сттрелка:
- *       DOUBLE Angle;
- * ВОЗРАЩАЕМОЕ ЗНАЧЕНИЕ: Нет.
- */
-VOID DrawArrow( HDC hDC, INT X1, INT Y1, INT Len, DOUBLE Angle )
-{
-  DOUBLE
-    si = sin(PD6_PI * Angle / 180),
-    co = cos(PD6_PI * Angle / 180);
-
-  MoveToEx(hDC, X1, Y1, NULL);
-  LineTo(hDC, X1 + si * Len, Y1 - co * Len);
-} /* End of 'DrawArrow' function */
-
-
-VOID DrawHandPoly( HDC hDC, INT Xc, INT Yc, INT L, INT W, FLOAT Angle )
-{
-  INT i;
-  POINT pnts[] =
-  {
-    {0, W}, {-W, 0}, {0, L}, {W, 0}
-  }, pntdraw[sizeof pnts / sizeof pnts[0]];
-  FLOAT si = sin(Angle), co = cos(Angle);
-
-  for (i = 0; i < sizeof pnts / sizeof pnts[0]; i++)
-  {
-    pntdraw[i].x = Xc + pnts[i].x * co - pnts[i].y * si;
-    pntdraw[i].y = Yc + pnts[i].y * co + pnts[i].x * si;
-  }
-
-  Polygon(hDC, pntdraw, sizeof pnts / sizeof pnts[0]);
-}
-
 /* Функция обработки сообщения окна.
  * АРГУМЕНТЫ:
  *   - дескриптор окна:
@@ -200,34 +159,20 @@ LRESULT CALLBACK MyWindowFunc( HWND hWnd, UINT Msg,
                                WPARAM wParam, LPARAM lParam )
 {
   HDC hDC;
-  INT RS = 300, RM = 270, RH = 150;
-  CREATESTRUCT *cs;
-  SYSTEMTIME st, TimeLine;
-  CHAR Buf[100];
-  HFONT hFnt, hOldFnt;
-  HPEN hPen;
-  static BITMAP bm;
-  static HBITMAP hBm, hBmLogo;
-  static HDC hMemDC, hMemDCLogo;
+  static HDC hMemDC;
   static INT w, h;
+  static BITMAP bm;
+  static HBITMAP hBm;
 
   switch (Msg)
   {
   case WM_CREATE:
-    cs = (CREATESTRUCT *)lParam;
     SetTimer(hWnd, 111, 50, NULL);
-
-    hBmLogo = LoadImage(NULL, "ClockFace.bmp", IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE);
-    GetObject(hBmLogo, sizeof(bm), &bm);
 
     /* создаем контекст в памяти */
     hDC = GetDC(hWnd);
     hMemDC = CreateCompatibleDC(hDC);
-    hMemDCLogo = CreateCompatibleDC(hDC);
     ReleaseDC(hWnd, hDC);
-
-    SelectObject(hMemDCLogo, hBmLogo);
-    SetPixel(hMemDCLogo, 10, 10, RGB(255, 0, 0));
     return 0;
 
   case WM_SIZE:
@@ -253,61 +198,11 @@ LRESULT CALLBACK MyWindowFunc( HWND hWnd, UINT Msg,
     SetDCBrushColor(hMemDC, RGB(255, 255, 255));
     Rectangle(hMemDC, 0, 0, w + 1, h + 1);
 
-    StretchBlt(hMemDC, w / 2 - bm.bmWidth / 2, h / 2 - bm.bmHeight / 2, bm.bmWidth, bm.bmHeight,
-      hMemDCLogo, 0, 0, bm.bmWidth, bm.bmHeight, SRCCOPY);
-
-    /* Draw clock's arrows */
-    GetLocalTime(&TimeLine);
-
-    hPen = CreatePen(PS_SOLID, 2, RGB(255, 0, 0));
-    SelectObject(hMemDC, hPen);
-    DrawArrow(hMemDC, w / 2, h / 2, RS, TimeLine.wSecond * 6);
-    ///DrawHandPoly(hMemDC, w / 2, h / 2, RS, 5, TimeLine.wSecond * PD6_PI / 30);
-    DeleteObject(hPen);
-
-    hPen = CreatePen(PS_SOLID, 2, RGB(0, 255, 0));
-    SelectObject(hMemDC, hPen);
-/*    SelectObject(hMemDC, GetStockObject(DC_BRUSH));
     SelectObject(hMemDC, GetStockObject(NULL_PEN));
-    SetDCBrushColor(hMemDC, RGB(0, 255, 0));       */
-    DrawArrow(hMemDC, w / 2, h / 2, RM, TimeLine.wMinute * 6);
-    ///DrawHandPoly(hMemDC, w / 2, h / 2, RM, 20, TimeLine.wMinute * PD6_PI / 30);
-    ///SelectObject(hMemDC, GetStockObject(NULL_BRUSH));
-    DeleteObject(hPen);
-
-    hPen = CreatePen(PS_SOLID, 2, RGB(0, 0, 255));
-    SelectObject(hMemDC, hPen);
-    DrawArrow(hMemDC, w / 2, h / 2, RH, ((TimeLine.wHour - 1) % 12) * 30);
-    ///DrawHandPoly(hMemDC, w / 2, h / 2, -RH, 30, ((TimeLine.wHour - 1) % 12) * PD6_PI / 6);
-    DeleteObject(hPen);
-
-    /* Writing the time and the date at the moment */
-    hFnt = CreateFont(60, 0, 0, 0, FW_BOLD, FALSE, FALSE,
-      FALSE, RUSSIAN_CHARSET, OUT_DEFAULT_PRECIS,
-      CLIP_DEFAULT_PRECIS, PROOF_QUALITY,
-      VARIABLE_PITCH | FF_ROMAN, "");
-    hOldFnt = SelectObject(hMemDC, hFnt);
-
-    GetLocalTime(&st);
-    SetTextColor(hMemDC, RGB(59, 255, 230));
-    SetBkColor(hMemDC, RGB(255, 255, 0));
-    SetBkMode(hMemDC, TRANSPARENT);
-
-    TextOut(hMemDC, w / 2 - 210, h / 2 + 400, Buf,
-      sprintf(Buf, "Время: %02d:%02d:%02d",
-        st.wHour - 1, st.wMinute, st.wSecond));
-    TextOut(hMemDC, w / 2 - 210, h / 2 + 450, Buf,
-      sprintf(Buf, "Дата: %02d.%02d.%d",
-        st.wDay, st.wMonth, st.wYear));
-
-
-    DeleteObject(hFnt);
-
-    SelectObject(hMemDC, hOldFnt);
-    DeleteObject(hFnt);
-
-    SelectObject(hMemDC, GetStockObject(DC_PEN));
     SelectObject(hMemDC, GetStockObject(DC_BRUSH));
+    SetDCBrushColor(hMemDC, RGB(255, 0, 0));
+    GlobeBuild();
+    GlobeDraw(hMemDC, w, h);
 
     InvalidateRect(hWnd, NULL, TRUE);
     return 0;
@@ -317,6 +212,12 @@ LRESULT CALLBACK MyWindowFunc( HWND hWnd, UINT Msg,
       FlipFullScreen(hWnd);
     if (wParam == 27)
       SendMessage(hWnd, WM_CLOSE, 0, 0);
+    if (wParam == 'W')
+      IsWire = !IsWire;
+    if (wParam == VK_UP)
+      Radius += 30;
+    if (wParam == VK_DOWN)
+      Radius -= 30;
     return 0;
 
   case WM_CLOSE:
@@ -332,8 +233,6 @@ LRESULT CALLBACK MyWindowFunc( HWND hWnd, UINT Msg,
   case WM_DESTROY:
     DeleteDC(hMemDC);
     DeleteObject(hBm);
-    DeleteDC(hMemDCLogo);
-    DeleteObject(hBmLogo);
     KillTimer(hWnd, 111);
     PostQuitMessage(0);
     return 0;
@@ -341,4 +240,4 @@ LRESULT CALLBACK MyWindowFunc( HWND hWnd, UINT Msg,
   return DefWindowProc(hWnd, Msg, wParam, lParam);
 } /* End of 'MyWindowFunc' function */
 
-/* END OF 'T02CLOCK.C' FILE */
+/* END OF 'T05GLOBE.C' FILE */

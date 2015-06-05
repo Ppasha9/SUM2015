@@ -47,7 +47,7 @@ VOID WriteToFile( INT A )
     fprintf(F, "%d ", A);
 
     if ((k % PD6_N) == 0)
-      fprintf(F, "- %s\n", Parity ? "Odd" : "Even");
+      fprintf(F, "- %s\n", Parity ? "Odd permutation" : "Even permutation");
 
     fclose(F);
   }
