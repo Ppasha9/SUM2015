@@ -11,9 +11,10 @@
 #include <windows.h>
 
 #include "globe.h"
+#include "image.h"
 
-#define N 300
-#define M 300
+#define N 100
+#define M 100
 
 /* Массив хранения координат */
 static VEC Grid[N][M];
@@ -21,6 +22,9 @@ static VEC Grid[N][M];
 extern INT IsWire, PicH, PicW;
 INT Radius = 228;
 extern BYTE *Pic;
+
+/* Main picture */
+IMAGE GlobeImg;
 
 /* Функция векторного произведения */
 VEC VecCrossVec( VEC A, VEC B )
@@ -59,12 +63,12 @@ VEC RotateX( VEC P, DOUBLE AngleDegree )
 /* Рисование четырехугольника */
 VOID DrawQuad( HDC hDC, VEC P0, VEC P1, VEC P2, VEC P3, INT W, INT H )
 {
-  VEC Norm = VecCrossVec(VecSubVec(P3, P0), VecSubVec(P1, P0));
+  //VEC Norm = VecCrossVec(VecSubVec(P3, P0), VecSubVec(P1, P0));
   POINT pnts[4];
 
   /* back-face culling */
-  if (Norm.Z > 0)
-    return;
+  /*if (Norm.Z > 0)
+    return;  */
 
   pnts[0].x = P0.X + W / 2;
   pnts[0].y = -P0.Y + H / 2;
@@ -78,6 +82,11 @@ VOID DrawQuad( HDC hDC, VEC P0, VEC P1, VEC P2, VEC P3, INT W, INT H )
   pnts[3].x = P3.X + W / 2;
   pnts[3].y = -P3.Y + H / 2;
 
+  if ((pnts[0].x - pnts[1].x) * (pnts[0].y + pnts[1].y) +
+      (pnts[1].x - pnts[2].x) * (pnts[1].y + pnts[2].y) +
+      (pnts[2].x - pnts[3].x) * (pnts[2].y + pnts[3].y) +
+      (pnts[3].x - pnts[0].x) * (pnts[3].y + pnts[0].y) < 0)
+    return;
 
   Polygon(hDC, pnts, 4);
 } /* End of 'DrawQuad' function */
@@ -92,6 +101,9 @@ VOID GlobeBuild( VOID )
   DOUBLE phi, theta, t = clock() / (DOUBLE)CLOCKS_PER_SEC;
   INT i, j;
 
+  if (GlobeImg.hBm == NULL)
+    ImageLoad(&GlobeImg, "X:\\PICS\\M.BMP");
+
   srand(30);
   for (i = 0; i < N; i++)
   {
@@ -104,7 +116,7 @@ VOID GlobeBuild( VOID )
       Grid[i][j].Y = Radius * cos(theta);
       Grid[i][j].Z = Radius * sin(theta) * cos(phi);
 
-      Grid[i][j] = RotateX(Grid[i][j], sin(t * 3) * 30);
+      Grid[i][j] = RotateX(Grid[i][j], sin(t * 3) * 50);
     }
   }
 } /* End of 'GlobeBuild' function */
@@ -134,16 +146,19 @@ VOID GlobeDraw( HDC hDC, INT W, INT H )
     SelectObject(hDC, GetStockObject(NULL_BRUSH));
   }
 
-  for (i = 0; i < N; i++)
-    for (j = 0; j < M; j++)
+  for (i = 0; i < N - 1; i++)
+    for (j = 0; j < M - 1; j++)
     {
       INT
+        ix = j * (GlobeImg.W - 1) / (M - 1),
+        iy = i * (GlobeImg.H - 1) / (N - 1),
         x = Grid[i][j].X + W / 2,
         y = Grid[i][j].Y + H / 2;
 
-      x1 = j * PicW / (M + 1);
+      /*x1 = j * PicW / (M + 1);
       y1 = i * PicH / (N + 1);
-      SetDCBrushColor(hDC, RGB(Pic[(y1 * PicW + x1) * 3 + 2], Pic[(y1 * PicW + x1) * 3 + 1], Pic[(y1 * PicW + x1) * 3]));
+      SetDCBrushColor(hDC, RGB(Pic[(y1 * PicW + PicW - x1) * 3 + 2], Pic[(y1 * PicW + PicW - x1) * 3 + 1], Pic[(y1 * PicW + PicW - x1) * 3]));*/
+      SetDCBrushColor(hDC, ImageGetP(&GlobeImg, ix, iy));
       DrawQuad(hDC, Grid[i][j], Grid[i][j + 1], Grid[i + 1][j + 1], Grid[i + 1][j], W, H);
       //Ellipse(hDC, x - 5, y - 5, x + 5, y + 5);
     }

@@ -12,15 +12,19 @@
 #include <windows.h>
 
 #include "globe.h"
+#include "image.h"
 
 /* »м€ класса окна */
 #define WND_CLASS_NAME "My window class"
 
 /* –исовать в режиме WireFrame или нет */
 BOOL IsWire = FALSE;
+
 extern INT Radius;
 BYTE *Pic;
 INT PicH = 0, PicW = 0;
+
+extern IMAGE GlobeImg;
 
 /* —сылка вперед */
 LRESULT CALLBACK MyWindowFunc( HWND hWnd, UINT Msg,
@@ -165,7 +169,7 @@ LRESULT CALLBACK MyWindowFunc( HWND hWnd, UINT Msg,
   static INT w, h;
   static BITMAP bm;
   static HBITMAP hBm;
-  FILE *F;
+  //FILE *F;
 
   switch (Msg)
   {
@@ -177,12 +181,12 @@ LRESULT CALLBACK MyWindowFunc( HWND hWnd, UINT Msg,
     hMemDC = CreateCompatibleDC(hDC);
     ReleaseDC(hWnd, hDC);
 
-    F = fopen("PYATACK.g24", "rb");
+/*    F = fopen("VINNYPUH.g24", "rb");
     fread(&PicW, 2, 1, F);
     fread(&PicH, 2, 1, F);
     Pic = malloc(PicW * PicH * 3);
     fread(Pic, 3, PicW * PicH, F);
-    fclose(F);
+    fclose(F);*/
 
     return 0;
 
@@ -209,8 +213,6 @@ LRESULT CALLBACK MyWindowFunc( HWND hWnd, UINT Msg,
     SetDCBrushColor(hMemDC, RGB(255, 255, 255));
     Rectangle(hMemDC, 0, 0, w + 1, h + 1);
 
-
-
     SelectObject(hMemDC, GetStockObject(NULL_PEN));
     SelectObject(hMemDC, GetStockObject(DC_BRUSH));
     SetDCBrushColor(hMemDC, RGB(255, 0, 0));
@@ -234,7 +236,7 @@ LRESULT CALLBACK MyWindowFunc( HWND hWnd, UINT Msg,
     return 0;
 
   case WM_CLOSE:
-    if (MessageBox(hWnd, "Are you shure to exit from program?",
+    if (MessageBox(hWnd, "Are you sure to exit from program?",
           "Exit", MB_YESNO | MB_ICONQUESTION) == IDNO)
       return 0;
     break;
@@ -246,6 +248,7 @@ LRESULT CALLBACK MyWindowFunc( HWND hWnd, UINT Msg,
   case WM_DESTROY:
     DeleteDC(hMemDC);
     DeleteObject(hBm);
+    ImageFree(&GlobeImg);
     KillTimer(hWnd, 111);
     PostQuitMessage(0);
     return 0;
