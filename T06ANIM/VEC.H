@@ -33,6 +33,15 @@ typedef struct tagMATR
 } MATR;
 
 
+/* Standard function for swaping tow numbers */
+__inline VOID Swap( DBL *A, DBL *B )
+{
+  DBL tmp = *A;
+
+  *A = *B;
+  *B = tmp;
+} /* End of 'Swap' function */
+
 /* Identity matrix */
 __inline MATR MatrIdentity( VOID )
 {
@@ -199,7 +208,8 @@ __inline MATR MatrTranspose( MATR M )
 
   for (i = 0; i < 4; i++)
     for (j = 0; j < 4; j++)
-      M.A[i][j] = M.A[j][i];
+      if (j <= i)
+        Swap(&M.A[i][j], &M.A[j][i]);
 
   return M;
 } /* End of 'MatrTranspose' function */

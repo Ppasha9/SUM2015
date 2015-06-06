@@ -23,16 +23,16 @@ void main( void )
   }, m1 =
   {
     {
-      {0, 0, 0, 0},
-      {0, 0, 0, 0},
-      {0, 0, 0, 0},
-      {0, 0, 0, 0}
+      {0, 0, 0, 1},
+      {0, 0, 1, 0},
+      {0, 1, 0, 0},
+      {1, 0, 0, 0}
     }
   }, res;
   INT i, j;
 
 
-  res = MatrTranspose(m);
+  res = MatrRotateX(90);
 
   for (i = 0; i < 4; i++)
   {
@@ -41,8 +41,11 @@ void main( void )
     printf("\n");
   }
 
+  printf("\n");
   v = VecAddVec(v, v1);
   printf("%g %g %g", v.X, v.Y, v.Z);
+  printf("\n\n");
 
+  printf("The det is - %g", MatrDeterm(m1));
   getch();
 }
