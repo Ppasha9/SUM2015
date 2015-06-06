@@ -66,7 +66,7 @@
 				AdditionalLibraryDirectories="X:\TGRKIT\LIB;$(DXSDK_DIR)Lib\0x86;$(OPENAL_DIR)Libs;"
 				GenerateManifest="false"
 				GenerateDebugInformation="true"
-				SubSystem="1"
+				SubSystem="2"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -186,12 +186,28 @@
 				RelativePath=".\VEC.C"
 				>
 			</File>
+			<Filter
+				Name="Obj handle"
+				>
+				<File
+					RelativePath=".\LOADOBJ.C"
+					>
+				</File>
+				<File
+					RelativePath=".\OBJ3D.H"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="Header Files"
 			Filter="h;hpp;hxx;hm;inl;inc;xsd"
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
+			<File
+				RelativePath=".\DEF.H"
+				>
+			</File>
 			<File
 				RelativePath=".\VEC.H"
 				>

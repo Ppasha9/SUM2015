@@ -10,10 +10,8 @@
 #include <math.h>
 #include <windows.h>
 #define PI 3.14159265358979323846
+extern long double MultiplierDegree2Radian;
 
-#define DEGREE2RADIANL 0.01745329251994329576L
-/* Multiplyer degree to radian constant */
-long double MultiplierDegree2Radian = DEGREE2RADIANL;
 
 #define D2R(A) ((A) * PI / 180.0)
 
@@ -416,7 +414,7 @@ __inline VEC PointTransform( VEC V, MATR M )
     V.X * M.A[0][0] + V.Y * M.A[1][0] + V.Z * M.A[2][0] + M.A[3][0],
     V.X * M.A[0][1] + V.Y * M.A[1][1] + V.Z * M.A[2][1] + M.A[3][1],
     V.X * M.A[0][2] + V.Y * M.A[1][2] + V.Z * M.A[2][2] + M.A[3][2]);
-} /* End of 'PointTransform' function */
+} /* End of 'PointTrans form' function */
 
 /* Transformation the vector by matrix */
 __inline VEC VectorTransform( VEC V, MATR M )
@@ -428,7 +426,7 @@ __inline VEC VectorTransform( VEC V, MATR M )
 } /* End of 'VectorTransform' function */
 
 /* Rotate vector around X axis */
-VEC VecRotateX( VEC P, DOUBLE AngleDegree )
+__inline VEC VecRotateX( VEC P, DOUBLE AngleDegree )
 {
   DOUBLE a = D2R(AngleDegree), si = sin(a), co = cos(a);
   VEC r;
@@ -440,7 +438,7 @@ VEC VecRotateX( VEC P, DOUBLE AngleDegree )
 } /* End of 'VecRotateX' function */
 
 /* Rotate vector around X axis */
-VEC VecRotateY( VEC P, DOUBLE AngleDegree )
+__inline VEC VecRotateY( VEC P, DOUBLE AngleDegree )
 {
   DOUBLE a = D2R(AngleDegree), si = sin(a), co = cos(a);
   VEC r;
@@ -449,10 +447,10 @@ VEC VecRotateY( VEC P, DOUBLE AngleDegree )
   r.X = P.X * co - P.Z * si;
   r.Z = P.X * si + P.Z * co;
   return r;
-} /* End of 'VecRotateX' function */
+} /* End of 'VecRotateY' function */
 
 /* Rotate vector around X axis */
-VEC VecRotateZ( VEC P, DOUBLE AngleDegree )
+__inline VEC VecRotateZ( VEC P, DOUBLE AngleDegree )
 {
   DOUBLE a = D2R(AngleDegree), si = sin(a), co = cos(a);
   VEC r;
@@ -461,7 +459,7 @@ VEC VecRotateZ( VEC P, DOUBLE AngleDegree )
   r.Y = P.X * co - P.Y * si;
   r.Z = P.X * si + P.Y * co;
   return r;
-} /* End of 'VecRotateX' function */
+} /* End of 'VecRotateZ' function */
 
 /* Equal */
 __inline VEC VecAddVecEq( VEC *VRes, VEC V2 )
