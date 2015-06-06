@@ -259,13 +259,13 @@ __inline MATR MatrInverse( MATR M )
 {
   MATR r;
   DBL det = MatrDeterm(M);
-  INT p[4][3] =
+/*  INT p[4][3] =
   {
     {1, 2, 3},
     {0, 2, 3},
     {0, 1, 3},
     {0, 1, 2}
-  };
+  };*/
 
   if (det == 0)
     return MatrIdentity();
@@ -273,23 +273,23 @@ __inline MATR MatrInverse( MATR M )
   r.A[0][0] = MatrDeterm3x3(M.A[1][1], M.A[1][2], M.A[1][3],
                             M.A[2][1], M.A[2][2], M.A[2][3],
                             M.A[3][1], M.A[3][2], M.A[3][3]) / det;
-  r.A[1][0] = MatrDeterm3x3(M.A[1][0], M.A[1][2], M.A[1][3],
+  r.A[1][0] = -MatrDeterm3x3(M.A[1][0], M.A[1][2], M.A[1][3],
                             M.A[2][0], M.A[2][2], M.A[2][3],
                             M.A[3][0], M.A[3][2], M.A[3][3]) / det;
   r.A[2][0] = MatrDeterm3x3(M.A[1][0], M.A[1][1], M.A[1][3],
                             M.A[2][0], M.A[2][1], M.A[2][3],
                             M.A[3][0], M.A[3][1], M.A[3][3]) / det;
-  r.A[3][0] = MatrDeterm3x3(M.A[1][0], M.A[1][1], M.A[1][2],
+  r.A[3][0] = -MatrDeterm3x3(M.A[1][0], M.A[1][1], M.A[1][2],
                             M.A[2][0], M.A[2][1], M.A[2][2],
                             M.A[3][0], M.A[3][1], M.A[3][2]) / det;
 
-  r.A[0][1] = MatrDeterm3x3(M.A[0][1], M.A[0][2], M.A[0][3],
+  r.A[0][1] = -MatrDeterm3x3(M.A[0][1], M.A[0][2], M.A[0][3],
                             M.A[2][1], M.A[2][2], M.A[2][3],
                             M.A[3][1], M.A[3][2], M.A[3][3]) / det;
   r.A[1][1] = MatrDeterm3x3(M.A[0][0], M.A[0][2], M.A[0][3],
                             M.A[2][0], M.A[2][2], M.A[2][3],
                             M.A[3][0], M.A[3][2], M.A[3][3]) / det;
-  r.A[2][1] = MatrDeterm3x3(M.A[0][0], M.A[0][1], M.A[0][3],
+  r.A[2][1] = -MatrDeterm3x3(M.A[0][0], M.A[0][1], M.A[0][3],
                             M.A[2][0], M.A[2][1], M.A[2][3],
                             M.A[3][0], M.A[3][1], M.A[3][3]) / det;
   r.A[3][1] = MatrDeterm3x3(M.A[0][0], M.A[0][1], M.A[0][2],
@@ -299,23 +299,23 @@ __inline MATR MatrInverse( MATR M )
   r.A[0][2] = MatrDeterm3x3(M.A[0][1], M.A[0][2], M.A[0][3],
                             M.A[1][1], M.A[1][2], M.A[1][3],
                             M.A[3][1], M.A[3][2], M.A[3][3]) / det;
-  r.A[1][2] = MatrDeterm3x3(M.A[0][0], M.A[0][2], M.A[0][3],
+  r.A[1][2] = -MatrDeterm3x3(M.A[0][0], M.A[0][2], M.A[0][3],
                             M.A[1][0], M.A[1][2], M.A[1][3],
                             M.A[3][0], M.A[3][2], M.A[3][3]) / det;
   r.A[2][2] = MatrDeterm3x3(M.A[0][0], M.A[0][1], M.A[0][3],
                             M.A[1][0], M.A[1][1], M.A[1][3],
                             M.A[3][0], M.A[3][1], M.A[3][3]) / det;
-  r.A[3][2] = MatrDeterm3x3(M.A[0][0], M.A[0][1], M.A[0][2],
+  r.A[3][2] = -MatrDeterm3x3(M.A[0][0], M.A[0][1], M.A[0][2],
                             M.A[1][0], M.A[1][1], M.A[1][2],
                             M.A[3][0], M.A[3][1], M.A[3][2]) / det;
 
-  r.A[0][3] = MatrDeterm3x3(M.A[0][1], M.A[0][2], M.A[0][3],
+  r.A[0][3] = -MatrDeterm3x3(M.A[0][1], M.A[0][2], M.A[0][3],
                             M.A[1][1], M.A[1][2], M.A[1][3],
                             M.A[2][1], M.A[2][2], M.A[2][3]) / det;
   r.A[1][3] = MatrDeterm3x3(M.A[0][0], M.A[0][2], M.A[0][3],
                             M.A[1][0], M.A[1][2], M.A[1][3],
                             M.A[2][0], M.A[2][2], M.A[2][3]) / det;
-  r.A[2][3] = MatrDeterm3x3(M.A[0][0], M.A[0][1], M.A[0][3],
+  r.A[2][3] = -MatrDeterm3x3(M.A[0][0], M.A[0][1], M.A[0][3],
                             M.A[1][0], M.A[1][1], M.A[1][3],
                             M.A[2][0], M.A[2][1], M.A[2][3]) / det;
   r.A[3][3] = MatrDeterm3x3(M.A[0][0], M.A[0][1], M.A[0][2],
@@ -323,11 +323,18 @@ __inline MATR MatrInverse( MATR M )
                             M.A[2][0], M.A[2][1], M.A[2][2]) / det;
 
 /*  for (i = 0; i < 4; i++)
-    for (j = 0; j < 4; j++)  
-      r.A[j][i] =
-        MatrDeterm3x3(M.A[p[i][0]][p[j][0]], M.A[p[i][0]][p[j][1]], M.A[p[i][0]][p[j][2]],
-                      M.A[p[i][1]][p[j][0]], M.A[p[i][1]][p[j][1]], M.A[p[i][1]][p[j][2]],
-                      M.A[p[i][2]][p[j][0]], M.A[p[i][2]][p[j][1]], M.A[p[i][2]][p[j][2]]) / det;*/
+    for (j = 0; j < 4; j++)
+      if ((2 * (i + j) - 1) % 2 == 0)
+        r.A[j][i] =
+          MatrDeterm3x3(M.A[p[i][0]][p[j][0]], M.A[p[i][0]][p[j][1]], M.A[p[i][0]][p[j][2]],
+                        M.A[p[i][1]][p[j][0]], M.A[p[i][1]][p[j][1]], M.A[p[i][1]][p[j][2]],
+                        M.A[p[i][2]][p[j][0]], M.A[p[i][2]][p[j][1]], M.A[p[i][2]][p[j][2]]) / det;
+      else
+        r.A[j][i] =
+          -MatrDeterm3x3(M.A[p[i][0]][p[j][0]], M.A[p[i][0]][p[j][1]], M.A[p[i][0]][p[j][2]],
+                        M.A[p[i][1]][p[j][0]], M.A[p[i][1]][p[j][1]], M.A[p[i][1]][p[j][2]],
+                        M.A[p[i][2]][p[j][0]], M.A[p[i][2]][p[j][1]], M.A[p[i][2]][p[j][2]]) / det;*/
+
 
   return r;
 } /* End of 'MatrInverse' function */

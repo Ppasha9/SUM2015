@@ -15,10 +15,10 @@ void main( void )
   MATR m =
   {
     {
-      {1,  2, 3, 4},
-      {1,  0, 3, 4},
+      {1, 2, 8, 4},
+      {1, 0, 3, 4},
       {1, 78, 3, 4},
-      {1,  2, 2, 4}
+      {1, 0, 2, 4}
     }
   }, m1 =
   {
@@ -32,7 +32,7 @@ void main( void )
   INT i, j;
 
 
-  res = MatrRotateX(90);
+  res = MatrInverse(m);
 
   for (i = 0; i < 4; i++)
   {
@@ -46,6 +46,6 @@ void main( void )
   printf("%g %g %g", v.X, v.Y, v.Z);
   printf("\n\n");
 
-  printf("The det is - %g", MatrDeterm(m1));
+  printf("The det is %g", MatrDeterm(m1));
   getch();
 }
