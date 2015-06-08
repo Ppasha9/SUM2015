@@ -36,14 +36,14 @@ VOID ObjDraw( HDC hDC, INT W, INT H )
   {
     /* рисуем точку ObjV[i] */
     if (!IsPause)
-      ObjV[i] = VectorTransform(ObjV[i], MatrMulMatr(MatrRotateX(10), MatrRotateY(sin(t * 3))));
+      ObjV[i] = VectorTransform(ObjV[i], MatrMulMatr(MatrRotateY(sin(t * 0.5)), MatrRotateX(sin(t * 3))));
     else
       ObjV[i] = VectorTransform(ObjV[i], MatrIdentity());
 
     if (!IsWire)
-      SelectObject(hDC, GetStockObject(BLACK_BRUSH));
+      SelectObject(hDC, GetStockObject(WHITE_BRUSH));
     else
-      SelectObject(hDC, GetStockObject(BLACK_PEN));
+      SelectObject(hDC, GetStockObject(WHITE_PEN));
 
     if (IsRainbow)
     {
@@ -51,9 +51,9 @@ VOID ObjDraw( HDC hDC, INT W, INT H )
       SetDCBrushColor(hDC, RGB(rand() % 255, rand() % 255, rand() % 255));
     }
     else
-      SelectObject(hDC, GetStockObject(BLACK_BRUSH));
+      SelectObject(hDC, GetStockObject(WHITE_BRUSH));
 
-    Ellipse(hDC,W / 2 - W / 16 * ObjV[i].X + 4, H / 2 - H / 16 * ObjV[i].Y + 4, W / 2 - W / 16 * ObjV[i].X - 4, H / 2 - H / 16 * ObjV[i].Y - 4);
+    Ellipse(hDC,W / 2 + ObjV[i].X - 4, H / 2 - ObjV[i].Y - 4, W / 2 + ObjV[i].X + 4, H / 2 - ObjV[i].Y + 4);
   }
 
 } /* End of 'ObjDraw' function */
@@ -98,6 +98,7 @@ BOOL ObjLoad( CHAR *FileName )
     {
       sscanf(Buf + 2, "%lf%lf%lf",
         &ObjV[nv].X, &ObjV[nv].Y, &ObjV[nv].Z);
+      ObjV[nv] = VecMulNum(ObjV[nv], 60);
       nv++;
     }
   }

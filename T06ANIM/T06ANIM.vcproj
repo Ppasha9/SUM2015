@@ -198,6 +198,42 @@
 					>
 				</File>
 			</Filter>
+			<Filter
+				Name="Animation system"
+				>
+				<File
+					RelativePath=".\ANIM.C"
+					>
+				</File>
+				<File
+					RelativePath=".\ANIM.H"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="Units handle"
+				>
+				<File
+					RelativePath=".\UBALL.C"
+					>
+				</File>
+				<File
+					RelativePath=".\UCOW.C"
+					>
+				</File>
+				<File
+					RelativePath=".\UNIT.C"
+					>
+				</File>
+				<File
+					RelativePath=".\UNITS.H"
+					>
+				</File>
+				<File
+					RelativePath=".\URECT.C"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="Header Files"
