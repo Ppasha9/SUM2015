@@ -167,8 +167,8 @@ VOID PD6_AnimRender( VOID )
     PD6_Anim.Units[i]->Render(PD6_Anim.Units[i], &PD6_Anim);
   }
 
-    TextOut(PD6_Anim.hDC, PD6_Anim.W / 30, PD6_Anim.H / 30, Buf,
-        sprintf(Buf, "FPS: %.5f", PD6_Anim.FPS));
+  TextOut(PD6_Anim.hDC, PD6_Anim.W / 30, PD6_Anim.H / 30, Buf,
+      sprintf(Buf, "FPS: %.5f", PD6_Anim.FPS));
 
   FrameCounter++;
 } /* End of 'PD6_AnimRender' function */
@@ -264,7 +264,7 @@ VOID PD6_AnimDoExit( VOID )
  * юпцслемрш:
  *   - ТКЮЦ ОЮСГШ:
  *       BOOL NewPauseFlag;
- * бнгбпюыюелне гмюве-мхе: мЕР.
+ * бнгбпюыюелне гмювемхе: мЕР.
  */
 VOID PD6_AnimSetPause( BOOL NewPauseFlag )
 {

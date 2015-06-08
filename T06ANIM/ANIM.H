@@ -35,7 +35,8 @@ typedef struct
     GlobalDeltaTime, /* межкадровое время в секундах без паузы */
     FPS;             /* количество кадров в секунду */
   BOOL
-    IsPause;         /* флаг паузы */
+    IsPause,         /* флаг паузы */
+    IsWire;
 
 } pd6ANIM;
 

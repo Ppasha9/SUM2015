@@ -66,7 +66,7 @@ static VOID PD6_AnimUnitResponse( pd6UNIT_BALL *Uni, pd6ANIM *Ani )
     PD6_AnimDoExit();
   if (GetAsyncKeyState('F') & 0x8000)
     PD6_AnimFlipFullScreen();
-  if (GetAsyncKeyState('p') & 0x8000)
+  if (GetAsyncKeyState('P') & 0x8000)
     PD6_AnimSetPause(TRUE);
 } /* End of 'PD6_AnimUnitResponse' function */
 

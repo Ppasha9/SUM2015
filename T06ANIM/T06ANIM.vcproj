@@ -234,6 +234,18 @@
 					>
 				</File>
 			</Filter>
+			<Filter
+				Name="Image handle"
+				>
+				<File
+					RelativePath=".\IMAGE.C"
+					>
+				</File>
+				<File
+					RelativePath=".\IMAGE.H"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="Header Files"

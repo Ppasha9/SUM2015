@@ -10,7 +10,7 @@
 
 #include "obj3d.h"
 
-extern BOOL IsPause, IsWire, IsRainbow, IsRed;
+extern BOOL IsWire, IsRainbow, IsRed, IsPause;
 
 /* Global model data */
 
@@ -43,7 +43,10 @@ VOID ObjDraw( HDC hDC, INT W, INT H )
     if (!IsWire)
       SelectObject(hDC, GetStockObject(WHITE_BRUSH));
     else
+    {
+      SelectObject(hDC, GetStockObject(NULL_BRUSH));
       SelectObject(hDC, GetStockObject(WHITE_PEN));
+    }
 
     if (IsRainbow)
     {
@@ -98,7 +101,7 @@ BOOL ObjLoad( CHAR *FileName )
     {
       sscanf(Buf + 2, "%lf%lf%lf",
         &ObjV[nv].X, &ObjV[nv].Y, &ObjV[nv].Z);
-      ObjV[nv] = VecMulNum(ObjV[nv], 60);
+      ObjV[nv] = VecMulNum(ObjV[nv], 1);
       nv++;
     }
   }

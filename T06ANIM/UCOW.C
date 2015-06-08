@@ -29,7 +29,7 @@ typedef struct tagpd6UNIT_COW
 static VOID PD6_CowUnitInit( pd6UNIT_СOW *Uni, pd6ANIM *Ani )
 {
   Uni->Pos = VecSet(Ani->W / 2, Ani->H / 2, 0);
-  ObjLoad("cow.object");
+  ObjLoad("UAZ.OBJ");
 } /* End of 'PD6_AnimUnitInit' function */
 
 /* Функция деинициализации объекта анимации.
