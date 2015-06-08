@@ -10,7 +10,7 @@
 
 #include "obj3d.h"
 
-extern BOOL IsPause, IsWire;
+extern BOOL IsPause, IsWire, IsRainbow, IsRed;
 
 /* Global model data */
 
@@ -31,6 +31,7 @@ VOID ObjDraw( HDC hDC, INT W, INT H )
   INT i;
   DBL x = sin(30), t = clock() / (DOUBLE)CLOCKS_PER_SEC;
 
+  srand(30);
   for (i = 0; i < ObjNumOfV; i++)
   {
     /* рисуем точку ObjV[i] */
@@ -43,6 +44,14 @@ VOID ObjDraw( HDC hDC, INT W, INT H )
       SelectObject(hDC, GetStockObject(BLACK_BRUSH));
     else
       SelectObject(hDC, GetStockObject(BLACK_PEN));
+
+    if (IsRainbow)
+    {
+      SelectObject(hDC, GetStockObject(DC_BRUSH));
+      SetDCBrushColor(hDC, RGB(rand() % 255, rand() % 255, rand() % 255));
+    }
+    else
+      SelectObject(hDC, GetStockObject(BLACK_BRUSH));
 
     Ellipse(hDC,W / 2 - W / 16 * ObjV[i].X + 4, H / 2 - H / 16 * ObjV[i].Y + 4, W / 2 - W / 16 * ObjV[i].X - 4, H / 2 - H / 16 * ObjV[i].Y - 4);
   }

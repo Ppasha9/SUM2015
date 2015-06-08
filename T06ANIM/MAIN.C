@@ -16,7 +16,7 @@
 /* »м€ класса окна */
 #define WND_CLASS_NAME "My window class"
 
-BOOL IsPause = FALSE, IsWire = FALSE;
+BOOL IsPause = FALSE, IsWire = FALSE, IsRed = FALSE, IsRainbow = FALSE;
 
 /* —сылка вперед */
 LRESULT CALLBACK MyWindowFunc( HWND hWnd, UINT Msg,
@@ -213,6 +213,8 @@ LRESULT CALLBACK MyWindowFunc( HWND hWnd, UINT Msg,
       IsPause = !IsPause;
     if (wParam == 'W')
       IsWire = !IsWire;
+    if (wParam == 'R')
+      IsRainbow = !IsRainbow;
     return 0;
 
   case WM_CLOSE:
