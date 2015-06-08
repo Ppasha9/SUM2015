@@ -230,9 +230,9 @@ LRESULT CALLBACK MyWindowFunc( HWND hWnd, UINT Msg,
     if (wParam == 'W')
       IsWire = !IsWire;
     if (wParam == VK_UP)
-      Radius += 30;
+      Radius += 19;
     if (wParam == VK_DOWN)
-      Radius -= 30;
+      Radius -= 19;
     return 0;
 
   case WM_CLOSE:

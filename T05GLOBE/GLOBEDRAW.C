@@ -102,7 +102,7 @@ VOID GlobeBuild( VOID )
   INT i, j;
 
   if (GlobeImg.hBm == NULL)
-    ImageLoad(&GlobeImg, "X:\\PICS\\M.BMP");
+    ImageLoad(&GlobeImg, "M.BMP");
 
   srand(30);
   for (i = 0; i < N; i++)
@@ -116,7 +116,7 @@ VOID GlobeBuild( VOID )
       Grid[i][j].Y = Radius * cos(theta);
       Grid[i][j].Z = Radius * sin(theta) * cos(phi);
 
-      Grid[i][j] = RotateX(Grid[i][j], sin(t * 3) * 50);
+      Grid[i][j] = RotateX(Grid[i][j], sin(t * 3) * 30);
     }
   }
 } /* End of 'GlobeBuild' function */
@@ -133,7 +133,7 @@ VOID GlobeBuild( VOID )
  */
 VOID GlobeDraw( HDC hDC, INT W, INT H )
 {
-  INT i, j, x1, y1;
+  INT i, j;
 
   if (!IsWire)
   {
