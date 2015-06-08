@@ -6,8 +6,11 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 
 #include "obj3d.h"
+
+extern BOOL IsPause, IsWire;
 
 /* Global model data */
 
@@ -19,18 +22,29 @@ INT ObjNumOfV; /* Number of model vertices */
  * ARGUMENTS:
  *   - context of the window:
  *       HDC hDC;
+ *   - the size of the window:
+ *       INT W, H;
  * RETURNS: None.
  */
 VOID ObjDraw( HDC hDC, INT W, INT H )
 {
   INT i;
-  DBL x = sin(30);
+  DBL x = sin(30), t = clock() / (DOUBLE)CLOCKS_PER_SEC;
 
   for (i = 0; i < ObjNumOfV; i++)
   {
     /* рисуем точку ObjV[i] */
-    SelectObject(hDC, GetStockObject(BLACK_BRUSH));
-    Ellipse(hDC, W / 2 - ObjV[i].X + 4, H / 2 - ObjV[i].Y + 4, W / 2 + ObjV[i].X - 4, H / 2 + ObjV[i].Y - 4);
+    if (!IsPause)
+      ObjV[i] = VectorTransform(ObjV[i], MatrMulMatr(MatrRotateX(10), MatrRotateY(sin(t * 3))));
+    else
+      ObjV[i] = VectorTransform(ObjV[i], MatrIdentity());
+
+    if (!IsWire)
+      SelectObject(hDC, GetStockObject(BLACK_BRUSH));
+    else
+      SelectObject(hDC, GetStockObject(BLACK_PEN));
+
+    Ellipse(hDC,W / 2 - W / 16 * ObjV[i].X + 4, H / 2 - H / 16 * ObjV[i].Y + 4, W / 2 - W / 16 * ObjV[i].X - 4, H / 2 - H / 16 * ObjV[i].Y - 4);
   }
 
 } /* End of 'ObjDraw' function */

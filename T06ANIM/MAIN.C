@@ -16,6 +16,8 @@
 /* »м€ класса окна */
 #define WND_CLASS_NAME "My window class"
 
+BOOL IsPause = FALSE, IsWire = FALSE;
+
 /* —сылка вперед */
 LRESULT CALLBACK MyWindowFunc( HWND hWnd, UINT Msg,
                                WPARAM wParam, LPARAM lParam );
@@ -207,6 +209,10 @@ LRESULT CALLBACK MyWindowFunc( HWND hWnd, UINT Msg,
       FlipFullScreen(hWnd);
     if (wParam == 27)
       SendMessage(hWnd, WM_CLOSE, 0, 0);
+    if (wParam == 'P')
+      IsPause = !IsPause;
+    if (wParam == 'W')
+      IsWire = !IsWire;
     return 0;
 
   case WM_CLOSE:

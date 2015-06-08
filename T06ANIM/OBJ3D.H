@@ -15,6 +15,8 @@
  * ARGUMENTS:
  *   - context of the window:
  *       HDC hDC;
+ *   - the size of the window:
+ *       INT W, H;
  * RETURNS: None.
  */
 VOID ObjDraw( HDC hDC, INT W, INT H );
