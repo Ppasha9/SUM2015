@@ -19,7 +19,7 @@
  *       INT W, H;
  * RETURNS: None.
  */
-VOID ObjDraw( HDC hDC, INT X, INT Y, DWORD Color );
+VOID ObjDraw( HDC hDC, INT X, INT Y, DWORD Color, pd6ANIM *Ani );
 
 /* Draw object functioln.
  * ARGUMENTS:

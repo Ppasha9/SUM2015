@@ -66,7 +66,7 @@ static VOID PD6_AnimUnitResponse( pd6UNIT_BALL *Uni, pd6ANIM *Ani )
 } /* End of 'PD6_AnimUnitResponse' function */
 
 /* Функция построения объекта анимации.
- * АРГУМЕНТЫ:                    
+ * АРГУМЕНТЫ:
  *   - указатель на "себя" - сам объект анимации:
  *       pd6UNIT_BALL *Uni;
  *   - указатель на контекст анимации:
@@ -75,7 +75,7 @@ static VOID PD6_AnimUnitResponse( pd6UNIT_BALL *Uni, pd6ANIM *Ani )
  */
 static VOID PD6_AnimUnitRender( pd6UNIT_BALL *Uni, pd6ANIM *Ani )
 {
-  DBL shift = Uni->Amplitude * fabs(sin(Uni->ScaleShift * (DBL)clock() / CLOCKS_PER_SEC + Uni->PhaseShift));
+  DBL shift = Uni->Amplitude * fabs(sin(Uni->ScaleShift * Ani->Time + Uni->PhaseShift));
 
   SetDCBrushColor(Ani->hDC, Uni->Color);
   Ellipse(Ani->hDC, Uni->Pos.X - 5, Uni->Pos.Y - 5 - shift, Uni->Pos.X + 5, Uni->Pos.Y + 5 - shift);

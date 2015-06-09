@@ -8,6 +8,7 @@
 #include <stdlib.h>
 #include <time.h>
 
+#include "anim.h"
 #include "obj3d.h"
 
 extern BOOL IsWire, IsRainbow, IsRed, IsPause;
@@ -26,16 +27,19 @@ INT ObjNumOfV; /* Number of model vertices */
  *       INT W, H;
  * RETURNS: None.
  */
-VOID ObjDraw( HDC hDC, INT X, INT Y, DWORD Color )
+VOID ObjDraw( HDC hDC, INT X, INT Y, DWORD Color, pd6ANIM *Ani )
 {
   INT i;
-  DBL x = sin(30), t = clock() / (DOUBLE)CLOCKS_PER_SEC;
+  DBL x = sin(30);
 
   srand(30);
   for (i = 0; i < ObjNumOfV; i++)
   {
     /* рисуем точку ObjV[i] */
-    ObjV[i] = VectorTransform(ObjV[i], MatrMulMatr(MatrRotateY(sin(t * 0.5)), MatrRotateX(sin(t * 3))));
+    if (!Ani->IsPause)
+      ObjV[i] = VectorTransform(ObjV[i], MatrMulMatr(MatrRotateY(sin(Ani->Time * 0.5)), MatrRotateX(sin(Ani->Time * 3))));
+    else
+      ObjV[i] = VectorTransform(ObjV[i], MatrIdentity());
 
     SetDCBrushColor(hDC, Color);
     Ellipse(hDC,X + ObjV[i].X - 4, Y - ObjV[i].Y - 4, X + ObjV[i].X + 4, Y - ObjV[i].Y + 4);

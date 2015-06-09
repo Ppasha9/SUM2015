@@ -67,6 +67,8 @@ static VOID PD6_AnimUnitResponse( pd6UNIT_CTRL *Uni, pd6ANIM *Ani )
   /* Controling by JoyStick */
   if (Ani->JButs[9])
     PD6_AnimFlipFullScreen();
+  if (Ani->JButs[8])
+    PD6_AnimSetPause(!Ani->IsPause);
 } /* End of 'PD6_AnimUnitResponse' function */
 
 /* Функция построения объекта анимации.

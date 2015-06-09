@@ -71,13 +71,13 @@ static VOID PD6_CowUnitResponse( pd6UNIT_СOW *Uni, pd6ANIM *Ani )
 
   /* Controling by JoyStick */
   if (Ani->JButs[0])
-    Uni->Pos.X -= 10;
+    Uni->Pos.X -= 20;
   if (Ani->JButs[2])
-    Uni->Pos.X += 10;
+    Uni->Pos.X += 20;
   if (Ani->JButs[1])
-    Uni->Pos.Y += 10;
+    Uni->Pos.Y += 20;
   if (Ani->JButs[3])
-    Uni->Pos.Y -= 10;
+    Uni->Pos.Y -= 20;
 
 } /* End of 'PD6_AnimUnitResponse' function */
 
@@ -91,7 +91,7 @@ static VOID PD6_CowUnitResponse( pd6UNIT_СOW *Uni, pd6ANIM *Ani )
  */
 static VOID PD6_CowUnitRender( pd6UNIT_СOW *Uni, pd6ANIM *Ani )
 {
-  ObjDraw(Ani->hDC, Uni->Pos.X, Uni->Pos.Y, Uni->Color);
+  ObjDraw(Ani->hDC, Uni->Pos.X, Uni->Pos.Y, Uni->Color, Ani);
 } /* End of 'PD6_AnimUnitRender' function */
 
 /* Функция создания объекта анимации "корова".
