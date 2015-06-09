@@ -29,8 +29,10 @@ typedef struct tagpd6UNIT_COW
  */
 static VOID PD6_CowUnitInit( pd6UNIT_ÑOW *Uni, pd6ANIM *Ani )
 {
-  Uni->Pos = VecSet(Ani->W / 2, Ani->H / 2, 0);
-  Uni->Color = RGB(255, 255, 255);
+  srand(30);
+
+  Uni->Pos = VecSet(rand() % Ani->W, rand() % Ani->H, 0);
+  Uni->Color = RGB(rand() % 255, rand() % 255, rand() % 255);
   ObjLoad("cow.object");
 } /* End of 'PD6_AnimUnitInit' function */
 
@@ -70,14 +72,29 @@ static VOID PD6_CowUnitResponse( pd6UNIT_ÑOW *Uni, pd6ANIM *Ani )
     Uni->Color = RGB(rand() % 255, rand() % 255, rand() % 255);
 
   /* Controling by JoyStick */
-  if (Ani->JButs[0])
-    Uni->Pos.X -= 20;
-  if (Ani->JButs[2])
-    Uni->Pos.X += 20;
-  if (Ani->JButs[1])
-    Uni->Pos.Y += 20;
-  if (Ani->JButs[3])
-    Uni->Pos.Y -= 20;
+/*  if (!Ani->IsPause)
+  {
+    if (Ani->JButs[0])
+      Uni->Pos.X -= 10;
+    if (Ani->JButs[2])
+      Uni->Pos.X += 10;
+    if (Ani->JButs[1])
+      Uni->Pos.Y += 10;
+    if (Ani->JButs[3])
+      Uni->Pos.Y -= 10;
+  }*/
+
+  if (!Ani->IsPause)
+  {
+    if (Ani->JY >= 0)
+      Uni->Pos.Y += 10;
+    if (Ani->JY < -0.00002)
+      Uni->Pos.Y -= 10;
+    if (Ani->JX >= 0)
+      Uni->Pos.X += 10;
+    if (Ani->JX < -0.00002)
+      Uni->Pos.X -= 10;
+  }
 
 } /* End of 'PD6_AnimUnitResponse' function */
 

@@ -69,6 +69,8 @@ static VOID PD6_AnimUnitResponse( pd6UNIT_CTRL *Uni, pd6ANIM *Ani )
     PD6_AnimFlipFullScreen();
   if (Ani->JButs[8])
     PD6_AnimSetPause(!Ani->IsPause);
+  if (Ani->JButsClick[6])
+    PD6_AnimDoExit();
 } /* End of 'PD6_AnimUnitResponse' function */
 
 /* Функция построения объекта анимации.
@@ -94,10 +96,11 @@ static VOID PD6_AnimUnitRender( pd6UNIT_CTRL *Uni, pd6ANIM *Ani )
   rc.bottom = Ani->H;
   DrawText(Ani->hDC, Buf,
     sprintf(Buf,
-    "JoyStick parametrs:\n"
+      "JoyStick parametrs:\n"
+      "Buttons: %i %i %i %i\n"
       "POV:%i\n"
       "%.5f %.5f %.5f %.5f",
-      Ani->JPOV,
+      Ani->JButs[0], Ani->JButs[1], Ani->JButs[2], Ani->JButs[3], Ani->JPOV,
       Ani->JX, Ani->JY, Ani->JZ, Ani->JR),
     &rc,
     DT_TOP | DT_LEFT);

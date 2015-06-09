@@ -202,7 +202,7 @@ VOID PD6_AnimRender( VOID )
         for (i = 0; i < 32; i++)
           PD6_Anim.JButs[i] = (ji.dwButtons >> i) & 1;
         for (i = 0; i < 32; i++)
-          PD6_Anim.JButs[i] = PD6_Anim.JButs[i] && !PD6_Anim.JButsOld[i];
+          PD6_Anim.JButsClick[i] = PD6_Anim.JButs[i] && !PD6_Anim.JButsOld[i];
 
         /* Îñè */
         PD6_Anim.JX = PD6_GET_AXIS_VALUE(X);

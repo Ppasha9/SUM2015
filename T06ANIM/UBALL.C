@@ -62,7 +62,12 @@ static VOID PD6_AnimUnitClose( pd6UNIT_BALL *Uni, pd6ANIM *Ani )
  */
 static VOID PD6_AnimUnitResponse( pd6UNIT_BALL *Uni, pd6ANIM *Ani )
 {
-  Uni->Amplitude += 30 * Ani->MsWheel;
+  if (Ani->JButs[3])
+    //Uni->Amplitude += 30 * Ani->MsWheel;
+    Uni->Amplitude += 5;
+  if (Ani->JButs[1])
+    Uni->Amplitude -= 5;
+
 } /* End of 'PD6_AnimUnitResponse' function */
 
 /* Функция построения объекта анимации.
