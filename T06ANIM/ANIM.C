@@ -28,7 +28,7 @@ static INT
   PD6_MouseOldX, PD6_MouseOldY;
 
 /* Системный контекст анимации */
-static pd6ANIM PD6_Anim;
+pd6ANIM PD6_Anim;
 
 /* Функция инициализации анимации.
  * АРГУМЕНТЫ:

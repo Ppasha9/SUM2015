@@ -31,6 +31,17 @@ typedef struct tagMATR
 } MATR;
 
 
+#define PD6_UNIT_MATR \
+{                 \
+  {               \
+    {1, 0, 0, 0}, \
+    {0, 1, 0, 0}, \
+    {0, 0, 1, 0}, \
+    {0, 0, 0, 1}  \
+  }               \
+}
+
+
 /* Standard function for swaping tow numbers */
 __inline VOID Swap( DBL *A, DBL *B )
 {

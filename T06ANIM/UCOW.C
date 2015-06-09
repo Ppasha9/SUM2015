@@ -8,15 +8,14 @@
 
 #include "anim.h"
 #include "vec.h"
-#include "obj3d.h"
+#include "render.h"
 
 /* Тип представления мяча */
 typedef struct tagpd6UNIT_COW
 {
   PD6_UNIT_BASE_FIELDS;
 
-  VEC Pos;     /* Позиция коровы */
-  DWORD Color; /* Цвет коровы */
+  pd6GOBJ Model;
 } pd6UNIT_СOW;
 
 /* Функция инициализации объекта анимации.
@@ -29,11 +28,7 @@ typedef struct tagpd6UNIT_COW
  */
 static VOID PD6_CowUnitInit( pd6UNIT_СOW *Uni, pd6ANIM *Ani )
 {
-  srand(30);
-
-  Uni->Pos = VecSet(rand() % Ani->W, rand() % Ani->H, 0);
-  Uni->Color = RGB(rand() % 255, rand() % 255, rand() % 255);
-  ObjLoad("cow.object");
+  PD6_RndGObjLoad(&Uni->Model, "cow.object");
 } /* End of 'PD6_AnimUnitInit' function */
 
 /* Функция деинициализации объекта анимации.
@@ -46,6 +41,7 @@ static VOID PD6_CowUnitInit( pd6UNIT_СOW *Uni, pd6ANIM *Ani )
  */
 static VOID PD6_CowUnitClose( pd6UNIT_СOW *Uni, pd6ANIM *Ani )
 {
+  PD6_RndGObjFree(&Uni->Model);
 } /* End of 'PD6_AnimUnitClose' function */
 
 /* Функция обновления межкадровых параметров объекта анимации.
@@ -58,7 +54,7 @@ static VOID PD6_CowUnitClose( pd6UNIT_СOW *Uni, pd6ANIM *Ani )
  */
 static VOID PD6_CowUnitResponse( pd6UNIT_СOW *Uni, pd6ANIM *Ani )
 {
-  srand(30);
+/*  srand(30);
 
   if (Ani->Keys[VK_UP])
     Uni->Pos.Y -= 10;
@@ -84,17 +80,17 @@ static VOID PD6_CowUnitResponse( pd6UNIT_СOW *Uni, pd6ANIM *Ani )
       Uni->Pos.Y -= 10;
   }*/
 
-  if (!Ani->IsPause)
+/*  if (!Ani->IsPause)
   {
     if (Ani->JY >= 0)
       Uni->Pos.Y += 10;
-    if (Ani->JY < -0.00002)
+    if (Ani->JY < -0.00783)
       Uni->Pos.Y -= 10;
     if (Ani->JX >= 0)
       Uni->Pos.X += 10;
-    if (Ani->JX < -0.00002)
+    if (Ani->JX < -0.00783)
       Uni->Pos.X -= 10;
-  }
+  }        */
 
 } /* End of 'PD6_AnimUnitResponse' function */
 
@@ -108,7 +104,11 @@ static VOID PD6_CowUnitResponse( pd6UNIT_СOW *Uni, pd6ANIM *Ani )
  */
 static VOID PD6_CowUnitRender( pd6UNIT_СOW *Uni, pd6ANIM *Ani )
 {
-  ObjDraw(Ani->hDC, Uni->Pos.X, Uni->Pos.Y, Uni->Color, Ani);
+  PD6_RndMatrWorld = MatrMulMatr(MatrScale(0.1, 0.1, 0.1),
+    MatrRotateX(30 * Ani->Time));
+
+  SetDCPenColor(Ani->hDC, RGB(255, 255, 255));
+  PD6_RndGObjDraw(&Uni->Model);
 } /* End of 'PD6_AnimUnitRender' function */
 
 /* Функция создания объекта анимации "корова".
@@ -128,6 +128,6 @@ pd6UNIT * PD6_UnitCowCreate( VOID )
   Uni->Response = (VOID *)PD6_CowUnitResponse;
   Uni->Render = (VOID *)PD6_CowUnitRender;
   return (pd6UNIT *)Uni;
-} /* End of 'PD6_UnitBallCreate' function */
+} /* End of 'PD6_UnitCowCreate' function */
 
 /* END OF 'UCOW.C' FILE */

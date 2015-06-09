@@ -213,6 +213,18 @@
 					RelativePath=".\ANIM.H"
 					>
 				</File>
+				<Filter
+					Name="Rendering system"
+					>
+					<File
+						RelativePath=".\RENDER.C"
+						>
+					</File>
+					<File
+						RelativePath=".\RENDER.H"
+						>
+					</File>
+				</Filter>
 			</Filter>
 			<Filter
 				Name="Units handle"
