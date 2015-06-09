@@ -61,10 +61,6 @@ static VOID PD6_RectUnitClose( pd6UNIT_RECT *Uni, pd6ANIM *Ani )
  */
 static VOID PD6_RectUnitResponse( pd6UNIT_RECT *Uni, pd6ANIM *Ani )
 {
-  if (GetAsyncKeyState(VK_ESCAPE) & 0x8000)
-    PD6_AnimDoExit();
-  if (GetAsyncKeyState('F') & 0x8000)
-    PD6_AnimFlipFullScreen();
 } /* End of 'PD6_AnimUnitResponse' function */
 
 /* Функция построения объекта анимации.

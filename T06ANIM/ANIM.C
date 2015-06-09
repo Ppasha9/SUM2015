@@ -6,6 +6,12 @@
 
 #include "anim.h"
 #include <stdio.h>
+#include <mmsystem.h>
+#pragma comment(lib, "winmm")
+
+/* Получение значения оси джойстика */
+#define PD6_GET_AXIS_VALUE(Axis) \
+  (2.0 * (ji.dw ## Axis ## pos - jc.w ## Axis ## min) / (jc.w ## Axis ## max - jc.w ## Axis ## min) - 1.0)
 
 /* Данные для синхронизации по времени */
 static INT64
@@ -16,6 +22,10 @@ static INT64
   TimeFPS;   /* время для замера FPS */
 static INT
   FrameCounter; /* счетчик кадров */
+
+/* Сохраненные мышиные координаты */
+static INT
+  PD6_MouseOldX, PD6_MouseOldY;
 
 /* Системный контекст анимации */
 static pd6ANIM PD6_Anim;
@@ -30,7 +40,9 @@ VOID PD6_AnimInit( HWND hWnd )
 {
   HDC hDC = GetDC(hWnd);
   LARGE_INTEGER li;
+  POINT pt;
 
+  memset(&PD6_Anim, 0, sizeof(pd6ANIM));
   PD6_Anim.hWnd = hWnd;
   /* Инициализируем буфер кадра */
   PD6_Anim.hDC = CreateCompatibleDC(hDC);
@@ -48,6 +60,13 @@ VOID PD6_AnimInit( HWND hWnd )
   TimeStart = TimeOld = TimeFPS = li.QuadPart;
   PD6_Anim.IsPause = FALSE;
   FrameCounter = 0;
+
+  /* Инициализация ввода */
+  GetCursorPos(&pt);
+  ScreenToClient(PD6_Anim.hWnd, &pt);
+  PD6_MouseOldX = pt.x;
+  PD6_MouseOldY = pt.y;
+  GetKeyboardState(PD6_Anim.KeysOld);
 } /* End of 'PD6_AnimInit' function */
 
 /* Функция деинициализации анимации.
@@ -103,23 +122,13 @@ VOID PD6_AnimRender( VOID )
   LARGE_INTEGER li;
   static CHAR Buf[100];
   HFONT hFnt, hOldFnt;
+  POINT pt;
 
   /* очистка фона */
   SelectObject(PD6_Anim.hDC, GetStockObject(DC_BRUSH));
   SelectObject(PD6_Anim.hDC, GetStockObject(NULL_PEN));
   SetDCBrushColor(PD6_Anim.hDC, RGB(0, 0, 0));
   Rectangle(PD6_Anim.hDC, 0, 0, PD6_Anim.W + 1, PD6_Anim.H + 1);
-
-  /* Writing the time and the date at the moment */
-  hFnt = CreateFont(60, 0, 0, 0, FW_BOLD, FALSE, FALSE,
-    FALSE, RUSSIAN_CHARSET, OUT_DEFAULT_PRECIS,
-    CLIP_DEFAULT_PRECIS, PROOF_QUALITY,
-    VARIABLE_PITCH | FF_ROMAN, "");
-  hOldFnt = SelectObject(PD6_Anim.hDC, hFnt);
-
-  SetTextColor(PD6_Anim.hDC, RGB(59, 255, 230));
-  SetBkColor(PD6_Anim.hDC, RGB(255, 255, 0));
-  SetBkMode(PD6_Anim.hDC, TRANSPARENT);
 
   /*** Обновление таймера ***/
   QueryPerformanceCounter(&li);
@@ -147,10 +156,76 @@ VOID PD6_AnimRender( VOID )
   /* время "прошлого" кадра */
   TimeOld = li.QuadPart;
 
-  DeleteObject(hFnt);
 
-  SelectObject(PD6_Anim.hDC, hOldFnt);
-  DeleteObject(hFnt);
+  /*** Обновление ввода ***/
+
+  /* Клавиатура */
+  GetKeyboardState(PD6_Anim.Keys);
+  for (i = 0; i < 256; i++)
+    PD6_Anim.Keys[i] >>= 7;
+  for (i = 0; i < 256; i++)
+    PD6_Anim.KeysClick[i] = PD6_Anim.Keys[i] && !PD6_Anim.KeysOld[i];
+  memcpy(PD6_Anim.KeysOld, PD6_Anim.Keys, sizeof(PD6_Anim.KeysOld));
+
+  /* Мышь */
+  /* колесо */
+  PD6_Anim.MsWheel = PD6_MouseWheel;
+  PD6_MouseWheel = 0;
+  /* абсолютная позиция */
+  GetCursorPos(&pt);
+  ScreenToClient(PD6_Anim.hWnd, &pt);
+  PD6_Anim.MsX = pt.x;
+  PD6_Anim.MsY = pt.y;
+  /* относительное перемещение */
+  PD6_Anim.MsDeltaX = pt.x - PD6_MouseOldX;
+  PD6_Anim.MsDeltaY = pt.y - PD6_MouseOldY;
+  PD6_MouseOldX = pt.x;
+  PD6_MouseOldY = pt.y;
+
+  /* Джойстик */
+  if ((i = joyGetNumDevs()) > 0)
+  {
+    JOYCAPS jc;
+
+    /* получение общей информации о джостике */
+    if (joyGetDevCaps(JOYSTICKID1, &jc, sizeof(jc)) == JOYERR_NOERROR)
+    {
+      JOYINFOEX ji;
+
+      /* получение текущего состояния */
+      ji.dwSize = sizeof(JOYCAPS);
+      ji.dwFlags = JOY_RETURNALL;
+      if (joyGetPosEx(JOYSTICKID1, &ji) == JOYERR_NOERROR)
+      {
+        /* Кнопки */
+        memcpy(PD6_Anim.JButsOld, PD6_Anim.JButs, sizeof(PD6_Anim.JButs));
+        for (i = 0; i < 32; i++)
+          PD6_Anim.JButs[i] = (ji.dwButtons >> i) & 1;
+        for (i = 0; i < 32; i++)
+          PD6_Anim.JButs[i] = PD6_Anim.JButs[i] && !PD6_Anim.JButsOld[i];
+
+        /* Оси */
+        PD6_Anim.JX = PD6_GET_AXIS_VALUE(X);
+        PD6_Anim.JY = PD6_GET_AXIS_VALUE(Y);
+        if (jc.wCaps & JOYCAPS_HASZ)
+          PD6_Anim.JZ = PD6_GET_AXIS_VALUE(Z);
+        if (jc.wCaps & JOYCAPS_HASU)
+          PD6_Anim.JU = PD6_GET_AXIS_VALUE(U);
+        if (jc.wCaps & JOYCAPS_HASV)
+          PD6_Anim.JV = PD6_GET_AXIS_VALUE(V);
+        if (jc.wCaps & JOYCAPS_HASR)
+          PD6_Anim.JR = PD6_GET_AXIS_VALUE(R);
+
+        if (jc.wCaps & JOYCAPS_HASPOV)
+        {
+          if (ji.dwPOV == 0xFFFF)
+            PD6_Anim.JPOV = 0;
+          else
+            PD6_Anim.JPOV = ji.dwPOV / 4500 + 1;
+        }
+      }
+    }
+  }
 
   /* опрос на изменение состояний объектов */
   for (i = 0; i < PD6_Anim.NumOfUnits; i++)
@@ -167,8 +242,31 @@ VOID PD6_AnimRender( VOID )
     PD6_Anim.Units[i]->Render(PD6_Anim.Units[i], &PD6_Anim);
   }
 
-  TextOut(PD6_Anim.hDC, PD6_Anim.W / 30, PD6_Anim.H / 30, Buf,
+  /* Writing the time and the date at the moment */
+  hFnt = CreateFont(30, 0, 0, 0, FW_BOLD, FALSE, FALSE,
+    FALSE, RUSSIAN_CHARSET, OUT_DEFAULT_PRECIS,
+    CLIP_DEFAULT_PRECIS, PROOF_QUALITY,
+    VARIABLE_PITCH | FF_ROMAN, "");
+  hOldFnt = SelectObject(PD6_Anim.hDC, hFnt);
+
+  SetTextColor(PD6_Anim.hDC, RGB(59, 255, 230));
+  SetBkColor(PD6_Anim.hDC, RGB(255, 255, 0));
+  SetBkMode(PD6_Anim.hDC, TRANSPARENT);
+
+  TextOut(PD6_Anim.hDC, PD6_Anim.W - 200, PD6_Anim.H / 30, Buf,
       sprintf(Buf, "FPS: %.5f", PD6_Anim.FPS));
+
+  SetTextColor(PD6_Anim.hDC, RGB(255, 55, 30));
+  SetBkColor(PD6_Anim.hDC, RGB(255, 255, 0));
+  SetBkMode(PD6_Anim.hDC, TRANSPARENT);
+
+  TextOut(PD6_Anim.hDC, PD6_Anim.W - 200, PD6_Anim.H / 30 + 30, Buf,
+      sprintf(Buf, "The time: %.2f", PD6_Anim.Time));
+
+  DeleteObject(hFnt);
+
+  SelectObject(PD6_Anim.hDC, hOldFnt);
+  DeleteObject(hFnt);
 
   FrameCounter++;
 } /* End of 'PD6_AnimRender' function */

@@ -16,6 +16,7 @@ typedef struct tagpd6UNIT_COW
   PD6_UNIT_BASE_FIELDS;
 
   VEC Pos;     /* Позиция коровы */
+  DWORD Color; /* Цвет коровы */
 } pd6UNIT_СOW;
 
 /* Функция инициализации объекта анимации.
@@ -28,7 +29,8 @@ typedef struct tagpd6UNIT_COW
  */
 static VOID PD6_CowUnitInit( pd6UNIT_СOW *Uni, pd6ANIM *Ani )
 {
-  Uni->Pos = VecSet(Ani->W, Ani->H, 0);
+  Uni->Pos = VecSet(Ani->W / 2, Ani->H / 2, 0);
+  Uni->Color = RGB(255, 255, 255);
   ObjLoad("cow.object");
 } /* End of 'PD6_AnimUnitInit' function */
 
@@ -54,10 +56,29 @@ static VOID PD6_CowUnitClose( pd6UNIT_СOW *Uni, pd6ANIM *Ani )
  */
 static VOID PD6_CowUnitResponse( pd6UNIT_СOW *Uni, pd6ANIM *Ani )
 {
-  if (GetAsyncKeyState(VK_ESCAPE) & 0x8000)
-    PD6_AnimDoExit();
-  if (GetAsyncKeyState('F') & 0x8000)
-    PD6_AnimFlipFullScreen();
+  srand(30);
+
+  if (Ani->Keys[VK_UP])
+    Uni->Pos.Y -= 10;
+  if (Ani->Keys[VK_DOWN])
+    Uni->Pos.Y += 10;
+  if (Ani->Keys[VK_LEFT])
+    Uni->Pos.X -= 10;
+  if (Ani->Keys[VK_RIGHT])
+    Uni->Pos.X += 10;
+  if (Ani->KeysClick['R'])
+    Uni->Color = RGB(rand() % 255, rand() % 255, rand() % 255);
+
+  /* Controling by JoyStick */
+  if (Ani->JButs[0])
+    Uni->Pos.X -= 10;
+  if (Ani->JButs[2])
+    Uni->Pos.X += 10;
+  if (Ani->JButs[1])
+    Uni->Pos.Y += 10;
+  if (Ani->JButs[3])
+    Uni->Pos.Y -= 10;
+
 } /* End of 'PD6_AnimUnitResponse' function */
 
 /* Функция построения объекта анимации.
@@ -70,7 +91,7 @@ static VOID PD6_CowUnitResponse( pd6UNIT_СOW *Uni, pd6ANIM *Ani )
  */
 static VOID PD6_CowUnitRender( pd6UNIT_СOW *Uni, pd6ANIM *Ani )
 {
-  ObjDraw(Ani->hDC, Uni->Pos.X, Uni->Pos.Y);
+  ObjDraw(Ani->hDC, Uni->Pos.X, Uni->Pos.Y, Uni->Color);
 } /* End of 'PD6_AnimUnitRender' function */
 
 /* Функция создания объекта анимации "корова".

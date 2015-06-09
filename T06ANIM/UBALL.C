@@ -62,16 +62,11 @@ static VOID PD6_AnimUnitClose( pd6UNIT_BALL *Uni, pd6ANIM *Ani )
  */
 static VOID PD6_AnimUnitResponse( pd6UNIT_BALL *Uni, pd6ANIM *Ani )
 {
-  if (GetAsyncKeyState(VK_ESCAPE) & 0x8000)
-    PD6_AnimDoExit();
-  if (GetAsyncKeyState('F') & 0x8000)
-    PD6_AnimFlipFullScreen();
-  if (GetAsyncKeyState('P') & 0x8000)
-    PD6_AnimSetPause(TRUE);
+  Uni->Amplitude += 30 * Ani->MsWheel;
 } /* End of 'PD6_AnimUnitResponse' function */
 
 /* Функция построения объекта анимации.
- * АРГУМЕНТЫ:
+ * АРГУМЕНТЫ:                    
  *   - указатель на "себя" - сам объект анимации:
  *       pd6UNIT_BALL *Uni;
  *   - указатель на контекст анимации:

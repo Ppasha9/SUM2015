@@ -183,6 +183,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\UCONTROL.C"
+				>
+			</File>
+			<File
 				RelativePath=".\VEC.C"
 				>
 			</File>

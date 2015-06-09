@@ -31,6 +31,13 @@ pd6UNIT * PD6_UnitCowCreate( VOID );
  */
 pd6UNIT * PD6_UnitRectCreate( VOID );
 
+/* Функция создания объекта анимации "управление".
+ * АРГУМЕНТЫ: Нет.
+ * ВОЗВРАЩАЕМОЕ ЗНАЧЕНИЕ:
+ *   (pd6UNIT *) указатель на созданный объект анимации.
+ */
+pd6UNIT * PD6_UnitControlCreate( VOID );
+
 #endif /* __UNITS_H_ */
 
 /* END OF 'UNITS.H' FILE */

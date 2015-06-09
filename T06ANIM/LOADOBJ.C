@@ -26,7 +26,7 @@ INT ObjNumOfV; /* Number of model vertices */
  *       INT W, H;
  * RETURNS: None.
  */
-VOID ObjDraw( HDC hDC, INT W, INT H )
+VOID ObjDraw( HDC hDC, INT X, INT Y, DWORD Color )
 {
   INT i;
   DBL x = sin(30), t = clock() / (DOUBLE)CLOCKS_PER_SEC;
@@ -35,28 +35,10 @@ VOID ObjDraw( HDC hDC, INT W, INT H )
   for (i = 0; i < ObjNumOfV; i++)
   {
     /* рисуем точку ObjV[i] */
-    if (!IsPause)
-      ObjV[i] = VectorTransform(ObjV[i], MatrMulMatr(MatrRotateY(sin(t * 0.5)), MatrRotateX(sin(t * 3))));
-    else
-      ObjV[i] = VectorTransform(ObjV[i], MatrIdentity());
+    ObjV[i] = VectorTransform(ObjV[i], MatrMulMatr(MatrRotateY(sin(t * 0.5)), MatrRotateX(sin(t * 3))));
 
-    if (!IsWire)
-      SelectObject(hDC, GetStockObject(WHITE_BRUSH));
-    else
-    {
-      SelectObject(hDC, GetStockObject(NULL_BRUSH));
-      SelectObject(hDC, GetStockObject(WHITE_PEN));
-    }
-
-    if (IsRainbow)
-    {
-      SelectObject(hDC, GetStockObject(DC_BRUSH));
-      SetDCBrushColor(hDC, RGB(rand() % 255, rand() % 255, rand() % 255));
-    }
-    else
-      SelectObject(hDC, GetStockObject(WHITE_BRUSH));
-
-    Ellipse(hDC,W / 2 + ObjV[i].X - 4, H / 2 - ObjV[i].Y - 4, W / 2 + ObjV[i].X + 4, H / 2 - ObjV[i].Y + 4);
+    SetDCBrushColor(hDC, Color);
+    Ellipse(hDC,X + ObjV[i].X - 4, Y - ObjV[i].Y - 4, X + ObjV[i].X + 4, Y - ObjV[i].Y + 4);
   }
 
 } /* End of 'ObjDraw' function */
