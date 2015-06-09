@@ -101,7 +101,7 @@ BOOL ObjLoad( CHAR *FileName )
     {
       sscanf(Buf + 2, "%lf%lf%lf",
         &ObjV[nv].X, &ObjV[nv].Y, &ObjV[nv].Z);
-      ObjV[nv] = VecMulNum(ObjV[nv], 1);
+      ObjV[nv] = VecMulNum(ObjV[nv], 60);
       nv++;
     }
   }

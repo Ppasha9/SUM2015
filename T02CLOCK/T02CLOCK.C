@@ -70,7 +70,7 @@ INT WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance,
       "Title",                      /* Заголовок окна */
       WS_OVERLAPPEDWINDOW,          /* Стили окна - окно общего вида */
       CW_USEDEFAULT, CW_USEDEFAULT, /* Позиция окна (x, y) - по умолчанию */
-      500, 500,                     /* Размеры окна (w, h) - по умолчанию */
+      1920, 1080,                     /* Размеры окна (w, h) - по умолчанию */
       NULL,                         /* Дескриптор родительского окна */
       NULL,                         /* Дескриптор загруженного меню */
       hInstance,                    /* Дескриптор приложения */

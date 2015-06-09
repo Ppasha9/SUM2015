@@ -77,10 +77,10 @@ static VOID PD6_RectUnitResponse( pd6UNIT_RECT *Uni, pd6ANIM *Ani )
  */
 static VOID PD6_RectUnitRender( pd6UNIT_RECT *Uni, pd6ANIM *Ani )
 {
-  DBL shift = fabs(sin(Uni->PhaseShift));
+  DBL shift = fabs(sin(Uni->PhaseShift + (DBL)clock() / CLOCKS_PER_SEC * 3)) * 30;
 
   SetDCBrushColor(Ani->hDC, Uni->Color);
-  Rectangle(Ani->hDC, Uni->Pos.X - 5, Uni->Pos.Y - 5 - shift, Uni->Pos.X + 5, Uni->Pos.Y + 5 - shift);
+  Rectangle(Ani->hDC, Uni->Pos.X - 5 - shift, Uni->Pos.Y - 5, Uni->Pos.X + 5, Uni->Pos.Y + 5 - shift);
 } /* End of 'PD6_AnimUnitRender' function */
 
 /* Функция создания объекта анимации "квадрат".
