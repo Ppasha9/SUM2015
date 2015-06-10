@@ -21,7 +21,8 @@ typedef struct tagpd6GOBJ
 /* Матрицы */
 extern MATR
   PD6_RndMatrWorld,
-  PD6_RndMatrView;
+  PD6_RndMatrView,
+  PD6_RndMatrProj;
 
 /* Параметры проецирования */
 extern DBL

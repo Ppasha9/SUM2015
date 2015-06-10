@@ -22,7 +22,7 @@ pd6UNIT * PD6_UnitBallCreate( VOID );
  * ВОЗВРАЩАЕМОЕ ЗНАЧЕНИЕ:
  *   (pd6UNIT *) указатель на созданный объект анимации.
  */
-pd6UNIT * PD6_UnitCowCreate( VOID );
+pd6UNIT * PD6_UnitModelCreate( VOID );
 
 /* Функция создания объекта анимации "квадрат".
  * АРГУМЕНТЫ: Нет.

@@ -5,6 +5,7 @@
  */
 
 #include "anim.h"
+#include "render.h"
 #include <stdio.h>
 #include <mmsystem.h>
 #pragma comment(lib, "winmm")
@@ -110,6 +111,13 @@ VOID PD6_AnimResize( INT W, INT H )
   PD6_Anim.H = H;
 
   ReleaseDC(PD6_Anim.hWnd, hDC);
+
+  if (W > H)
+    PD6_RndWp = (DBL)W / H * 3, PD6_RndHp = 3;
+  else
+    PD6_RndHp = (DBL)H / W * 3, PD6_RndWp = 3;
+
+  PD6_RndMatrProj = MatrFrustum(-PD6_RndWp / 2, PD6_RndWp / 2, -PD6_RndHp / 2, PD6_RndHp / 2, PD6_RndProjDist, 800);
 } /* End of 'PD6_AnimResize' function */
 
 /* Функция построения кадра анимации.
@@ -237,7 +245,7 @@ VOID PD6_AnimRender( VOID )
     SelectObject(PD6_Anim.hDC, GetStockObject(DC_BRUSH));
     SelectObject(PD6_Anim.hDC, GetStockObject(DC_PEN));
     SetDCBrushColor(PD6_Anim.hDC, RGB(255, 255, 255));
-    SetDCPenColor(PD6_Anim.hDC, RGB(0, 0, 0));
+    SetDCPenColor(PD6_Anim.hDC, RGB(255, 255, 255));
 
     PD6_Anim.Units[i]->Render(PD6_Anim.Units[i], &PD6_Anim);
   }

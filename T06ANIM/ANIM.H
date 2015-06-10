@@ -8,6 +8,7 @@
 #define __ANIM_H_
 
 #include "def.h"
+#include "vec.h"
 
 /* Максимальное количество элементов анимации */
 #define PD6_MAX_UNITS 3000
