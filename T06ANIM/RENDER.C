@@ -36,8 +36,8 @@ POINT PD6_RndWorldToScreen( VEC P )
   /* преобразование СК */
   P = PointTransform(P, PD6_RndMatrWorldViewProj);
 
-  Ps.x = (P.X / 2 + 0.5) * PD6_Anim.W;
-  Ps.y = (-P.Y / 2 + 0.5) * PD6_Anim.H;
+  Ps.x = (P.X / 2 + 0.5) * PD6_Anim.W + PD6_Anim.PosModel.X;
+  Ps.y = (-P.Y / 2 + 0.5) * PD6_Anim.H + PD6_Anim.PosModel.Y;
 
   return Ps;
 } /* End of 'PD6_RndWorldToScreen' function */

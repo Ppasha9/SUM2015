@@ -28,6 +28,8 @@ typedef struct tagpd6UNIT_MODEL
  */
 static VOID PD6_ModelUnitInit( pd6UNIT_MODEL *Uni, pd6ANIM *Ani )
 {
+  Ani->PosModel = VecSet(0, 0, 0);
+  Ani->AngleX = Ani->AngleY = Ani->AngleZ = 0.0;
   PD6_RndGObjLoad(&Uni->Model, "cow.object");
 } /* End of 'PD6_AnimUnitInit' function */
 
@@ -54,32 +56,14 @@ static VOID PD6_ModelUnitClose( pd6UNIT_MODEL *Uni, pd6ANIM *Ani )
  */
 static VOID PD6_ModelUnitResponse( pd6UNIT_MODEL *Uni, pd6ANIM *Ani )
 {
-
-  /* Controling by JoyStick */
-  /*if (!Ani->IsPause)
-  {
-    if (Ani->JButs[0])
-      Ani->PosModel.X -= 0.1;
-    if (Ani->JButs[2])
-      Ani->PosModel.X += 0.1;
-    if (Ani->JButs[1])
-      Ani->PosModel.Y += 0.1;
-    if (Ani->JButs[3])
-      Ani->PosModel.Y -= 0.1;
-  }*/
-
-/*  if (!Ani->IsPause)
-  {
-    if (Ani->JY >= 0)
-      Uni->Pos.Y += 10;
-    if (Ani->JY < -0.00783)
-      Uni->Pos.Y -= 10;
-    if (Ani->JX >= 0)
-      Uni->Pos.X += 10;
-    if (Ani->JX < -0.00783)
-      Uni->Pos.X -= 10;
-  }        */
-
+  if (Ani->JButs[4])
+    Ani->PosModel.X -= 10;
+  if (Ani->JButs[5])
+    Ani->PosModel.X += 10;
+  if (Ani->JButs[6])
+    Ani->PosModel.Y += 10;
+  if (Ani->JButs[7])
+    Ani->PosModel.Y -= 10;
 } /* End of 'PD6_AnimUnitResponse' function */
 
 /* Функция построения объекта анимации.
@@ -92,12 +76,16 @@ static VOID PD6_ModelUnitResponse( pd6UNIT_MODEL *Uni, pd6ANIM *Ani )
  */
 static VOID PD6_ModelUnitRender( pd6UNIT_MODEL *Uni, pd6ANIM *Ani )
 {
-  PD6_RndMatrWorld = MatrMulMatr(MatrMulMatr(
-    MatrRotateY(30 * Ani->Time + 100 * Ani->JR), MatrScale(0.10, 0.10, Ani->JZ)),
-    MatrTranslate(Ani->JX, -Ani->JY, 100 * Ani->JZ));
-  PD6_RndMatrView = MatrView(VecSet(0, 0, 10), VecSet(0, 0, 0), VecSet(0, 1, 0));
+  static DBL MouseShift = 0;
 
-  SetDCPenColor(Ani->hDC, RGB(255, 255, 255));
+  MouseShift += 30 * PD6_MouseWheel;
+  PD6_RndMatrWorld = MatrMulMatr(MatrMulMatr(MatrMulMatr(MatrMulMatr(
+    MatrRotateY(50 * Ani->Time), MatrScale(0.060, 0.060, 0.060)),
+    MatrTranslate(Ani->JX, -Ani->JY, 0)), MatrRotateX(50 * sin(Ani->Time * 3))), MatrScale(0.10 + sin(Ani->Time * 3), 0.10 + sin(Ani->Time * 3), 0.10 + sin(Ani->Time * 3)));
+  PD6_RndMatrView = MatrView(VecSet(8, 8, 8), VecSet(0, 0, 0), VecSet(0, 1, 0));
+
+
+  SetDCPenColor(Ani->hDC, RGB(rand() % 255, rand() % 255, rand() % 255));
   PD6_RndGObjDraw(&Uni->Model);
 } /* End of 'PD6_AnimUnitRender' function */
 

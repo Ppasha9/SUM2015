@@ -69,8 +69,8 @@ static VOID PD6_AnimUnitResponse( pd6UNIT_CTRL *Uni, pd6ANIM *Ani )
     PD6_AnimFlipFullScreen();
   if (Ani->JButs[8])
     PD6_AnimSetPause(!Ani->IsPause);
-  if (Ani->JButsClick[6])
-    PD6_AnimDoExit();
+/*  if (Ani->JButsClick[6])
+    PD6_AnimDoExit();*/
 } /* End of 'PD6_AnimUnitResponse' function */
 
 /* Функция построения объекта анимации.
@@ -90,8 +90,8 @@ static VOID PD6_AnimUnitRender( pd6UNIT_CTRL *Uni, pd6ANIM *Ani )
   SetTextColor(Ani->hDC, RGB(255, 255, 255));
   SetBkMode(Ani->hDC, TRANSPARENT);
 
-  rc.left = 0;
-  rc.top = 0;
+  rc.left = 8;
+  rc.top = 5;
   rc.right = Ani->W;
   rc.bottom = Ani->H;
   DrawText(Ani->hDC, Buf,

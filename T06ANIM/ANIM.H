@@ -54,6 +54,9 @@ typedef struct
     JPOV;            /* Переключатель POV - 0..8 */
   DBL
     JX, JY, JZ, JR, JU, JV; /* Оси джойстика (-1.0 .. 1.0*/
+
+  VEC PosModel;
+  DBL AngleX, AngleY, AngleZ;
 } pd6ANIM;
 
 /* Глобальная переменная - счетчик прокрутки колеса мыши */

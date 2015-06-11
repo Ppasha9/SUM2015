@@ -251,7 +251,7 @@ VOID PD6_AnimRender( VOID )
   }
 
   /* Writing the time and the date at the moment */
-  hFnt = CreateFont(30, 0, 0, 0, FW_BOLD, FALSE, FALSE,
+  hFnt = CreateFont(32, 0, 0, 0, FW_BOLD, FALSE, FALSE,
     FALSE, RUSSIAN_CHARSET, OUT_DEFAULT_PRECIS,
     CLIP_DEFAULT_PRECIS, PROOF_QUALITY,
     VARIABLE_PITCH | FF_ROMAN, "");
@@ -261,14 +261,14 @@ VOID PD6_AnimRender( VOID )
   SetBkColor(PD6_Anim.hDC, RGB(255, 255, 0));
   SetBkMode(PD6_Anim.hDC, TRANSPARENT);
 
-  TextOut(PD6_Anim.hDC, PD6_Anim.W - 200, PD6_Anim.H / 30, Buf,
+  TextOut(PD6_Anim.hDC, PD6_Anim.W - 200, PD6_Anim.H / 30 - 15, Buf,
       sprintf(Buf, "FPS: %.5f", PD6_Anim.FPS));
 
   SetTextColor(PD6_Anim.hDC, RGB(255, 55, 30));
   SetBkColor(PD6_Anim.hDC, RGB(255, 255, 0));
   SetBkMode(PD6_Anim.hDC, TRANSPARENT);
 
-  TextOut(PD6_Anim.hDC, PD6_Anim.W - 200, PD6_Anim.H / 30 + 30, Buf,
+  TextOut(PD6_Anim.hDC, PD6_Anim.W - 200, PD6_Anim.H / 30 + 15, Buf,
       sprintf(Buf, "The time: %.2f", PD6_Anim.Time));
 
   DeleteObject(hFnt);

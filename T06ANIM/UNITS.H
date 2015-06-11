@@ -38,6 +38,14 @@ pd6UNIT * PD6_UnitRectCreate( VOID );
  */
 pd6UNIT * PD6_UnitControlCreate( VOID );
 
+/* Функция создания объекта анимации "камера".
+ * АРГУМЕНТЫ: Нет.
+ * ВОЗВРАЩАЕМОЕ ЗНАЧЕНИЕ:
+ *   (pd6UNIT *) указатель на созданный объект анимации.
+ */
+pd6UNIT * PD6_UnitCameraCreate( VOID );
+
+
 #endif /* __UNITS_H_ */
 
 /* END OF 'UNITS.H' FILE */
