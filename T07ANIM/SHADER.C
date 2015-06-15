@@ -133,6 +133,21 @@ UINT PD6_ShaderLoad( CHAR *FileNamePrefix )
 
 VOID PD6_ShaderFree( UINT PrgId )
 {
+  UINT i, n, shdrs[5];
+
+  if (PrgId == 0)
+    return;
+
+  /* получаем присоединенные шейдера */
+  glGetAttachedShaders(PrgId, 5, &n, shdrs);
+
+  /* удаляем */
+  for (i = 0; i < n; i++)
+  {
+    glDetachShader(PrgId, shdrs[i]);
+    glDeleteShader(shdrs[i]);
+  }
+  glDeleteProgram(PrgId);
 } /* End of 'PD6_ShaderFree' function */
 
 /* END OF 'SHADER.C' FILE */

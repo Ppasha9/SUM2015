@@ -133,7 +133,7 @@ VOID PD6_AnimResize( INT W, INT H )
   else
     PD6_RndHp = (DBL)H / W * 3, PD6_RndWp = 3;
 
-  PD6_RndMatrProj = MatrFrustum(-PD6_RndWp / 2, PD6_RndWp / 2, -PD6_RndHp / 2, PD6_RndHp / 2, PD6_RndProjDist, 800);
+  PD6_RndMatrProj = MatrFrustum(-PD6_RndWp / 2, PD6_RndWp / 2, -PD6_RndHp / 2, PD6_RndHp / 2, PD6_RndProjDist, 3000);
 } /* End of 'PD6_AnimResize' function */
 
 /* Функция построения кадра анимации.
@@ -145,7 +145,6 @@ VOID PD6_AnimRender( VOID )
   INT i;
   LARGE_INTEGER li;
   static CHAR Buf[100];
-  HFONT hFnt, hOldFnt;
   POINT pt;
 
   /*** Обновление таймера ***/
@@ -254,32 +253,6 @@ VOID PD6_AnimRender( VOID )
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   glColorMask(TRUE, TRUE, TRUE, FALSE);
 
-  /* Writing the time and the date at the moment */
-  hFnt = CreateFont(32, 0, 0, 0, FW_BOLD, FALSE, FALSE,
-    FALSE, RUSSIAN_CHARSET, OUT_DEFAULT_PRECIS,
-    CLIP_DEFAULT_PRECIS, PROOF_QUALITY,
-    VARIABLE_PITCH | FF_ROMAN, "");
-  hOldFnt = SelectObject(PD6_Anim.hDC, hFnt);
-
-  SetTextColor(PD6_Anim.hDC, RGB(59, 255, 230));
-  SetBkColor(PD6_Anim.hDC, RGB(255, 255, 0));
-  SetBkMode(PD6_Anim.hDC, TRANSPARENT);
-
-  TextOut(PD6_Anim.hDC, PD6_Anim.W - 200, PD6_Anim.H / 30 - 15, Buf,
-      sprintf(Buf, "FPS: %.5f", PD6_Anim.FPS));
-
-  SetTextColor(PD6_Anim.hDC, RGB(255, 55, 30));
-  SetBkColor(PD6_Anim.hDC, RGB(255, 255, 0));
-  SetBkMode(PD6_Anim.hDC, TRANSPARENT);
-
-  TextOut(PD6_Anim.hDC, PD6_Anim.W - 200, PD6_Anim.H / 30 + 15, Buf,
-      sprintf(Buf, "The time: %.2f", PD6_Anim.Time));
-
-  DeleteObject(hFnt);
-
-  SelectObject(PD6_Anim.hDC, hOldFnt);
-  DeleteObject(hFnt);
-
   /*
   glColor3d(0.3, 0.5, 0.7);
   glRectd(-2, -2, 2, 2);
@@ -289,20 +262,25 @@ VOID PD6_AnimRender( VOID )
 
   for (i = 0; i < PD6_Anim.NumOfUnits; i++)
   {
-    static DBL time = 5;
+    static DBL time = 3;
 
     time += PD6_Anim.GlobalDeltaTime;
-    if (time > 5)
+    if (time > 3)
     {
       time = 0;
       PD6_ShaderFree(PD6_RndProg);
       PD6_RndProg = PD6_ShaderLoad("TEST");
     }
 
+    glActiveTexture(GL_TEXTURE0);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
     PD6_RndMatrWorld = MatrIdentity();
 
     PD6_Anim.Units[i]->Render(PD6_Anim.Units[i], &PD6_Anim);
   }
+
   glFinish();
   FrameCounter++;
 } /* End of 'PD6_AnimRender' function */

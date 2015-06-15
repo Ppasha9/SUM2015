@@ -7,7 +7,7 @@
 #ifndef __DEF_H_
 #define __DEF_H_
 
-#pragma warning(disable: 4244)
+#pragma warning(disable: 4244 4305)
 
 #include <windows.h>
 

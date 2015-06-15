@@ -216,6 +216,18 @@
 						RelativePath=".\RENDER.H"
 						>
 					</File>
+					<Filter
+						Name="Geometry support"
+						>
+						<File
+							RelativePath=".\GEOM.C"
+							>
+						</File>
+						<File
+							RelativePath=".\PRIM.C"
+							>
+						</File>
+					</Filter>
 				</Filter>
 				<Filter
 					Name="Shader system"

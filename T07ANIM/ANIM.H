@@ -55,8 +55,7 @@ typedef struct
   DBL
     JX, JY, JZ, JR, JU, JV; /* Оси джойстика (-1.0 .. 1.0*/
 
-  VEC PosModel;
-  DBL AngleX, AngleY, AngleZ;
+  FLT Coef;
 } pd6ANIM;
 
 /* Глобальная переменная - счетчик прокрутки колеса мыши */

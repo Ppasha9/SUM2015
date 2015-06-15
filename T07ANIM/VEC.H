@@ -7,11 +7,12 @@
 #ifndef __VEC_H_
 #define __VEC_H_
 
+#include "def.h"
+
 #include <math.h>
 #include <windows.h>
 #define PI 3.14159265358979323846
 extern long double MultiplierDegree2Radian;
-
 
 #define D2R(A) ((A) * PI / 180.0)
 
