@@ -41,15 +41,15 @@ static VOID PD6_AnimUnitInit( pd6UNIT_MODEL *Uni, pd6ANIM *Ani )
     {{0, 0, 0}, {255, 255, 255}}
   };
 
-  Uni->TextId = PD6_TextureLoad("M.BMP");
+  //Uni->TextId = PD6_TextureLoad("ElphSkin.bmp");
 
   //PD6_PrimCreate(&Uni->Pr, PD6_PRIM_TRIMESH, 4, 6, V, I);
 
   PD6_RndPrimMatrConvert = MatrMulMatr(MatrScale(5, 5, 5), MatrRotateX(-90));
   //PD6_GeomLoad(&Uni->Model, "NISPF.g3d");
 
-  PD6_RndPrimMatrConvert = MatrMulMatr(MatrScale(0.9, 0.9, 0.9), MatrRotateX(-90));
-  PD6_GeomLoad(&Uni->Geom, "avent.g3d");
+  PD6_RndPrimMatrConvert = MatrMulMatr(MatrScale(15, 15, 15), MatrRotateX(0));
+  PD6_GeomLoad(&Uni->Geom, "Q:\\Models\\Avent\\avent.g3d");
 } /* End of 'PD6_AnimUnitInit' function */
 
 /* Функция деинициализации объекта анимации.
@@ -79,13 +79,13 @@ static VOID PD6_AnimUnitRender( pd6UNIT_MODEL *Uni, pd6ANIM *Ani )
 {
   INT i, j;
 
-  PD6_RndMatrView = MatrView(VecSet(8, 8, 8),
-                             VecSet(0, 0, 0),
-                             VecSet(0, 1, 0));
+  PD6_RndMatrView = MatrView(Ani->RndCamera.Loc,
+                             Ani->RndCamera.At,
+                             Ani->RndCamera.Up);
 
-  if (Ani->KeysClick['W'] || Ani->JButs[0])
+  if (Ani->JButs[0])
     glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-  if (Ani->KeysClick['Q'] || Ani->JButs[2])
+  if (Ani->JButs[2])
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
   glEnable(GL_DEPTH_TEST);
 
@@ -95,9 +95,9 @@ static VOID PD6_AnimUnitRender( pd6UNIT_MODEL *Uni, pd6ANIM *Ani )
       PD6_RndMatrWorld =
         MatrMulMatr(MatrMulMatr(MatrMulMatr(
           MatrTranslate(Ani->JX * 59, Ani->JY * 88, 0),
-          MatrScale(1.3, 1.1, 1.1)),
+          MatrScale(0.5, 0.5, 0.5)),
           MatrRotateY(30 * Ani->Time + Ani->JR * 180)),
-          MatrTranslate(j * 1.30, 0, i * 1.30 + 100 * Ani->JZ));
+          MatrTranslate(j * 1.30, -5, i * 1.30 + 100 * Ani->JZ));
       glColor3d(i & 1, j & 1, 1 - ((i & 1) + (j & 1)) / 2);
       PD6_GeomDraw(&Uni->Geom);
     }

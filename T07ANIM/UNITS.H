@@ -38,12 +38,12 @@ pd6UNIT * PD6_UnitRectCreate( VOID );
  */
 pd6UNIT * PD6_UnitControlCreate( VOID );
 
-/* Функция создания объекта анимации "камера".
- * АРГУМЕНТЫ: Нет.
- * ВОЗВРАЩАЕМОЕ ЗНАЧЕНИЕ:
- *   (pd6UNIT *) указатель на созданный объект анимации.
+/* Unit flying camera create function.
+ * ARGUMENTS: None.
+ * RETURNS:
+ *   (pd6UNIT_CAMFLY *) - pointer for new animation unit.
  */
-pd6UNIT * PD6_UnitCameraCreate( VOID );
+pd6UNIT *PD6_UnitCamFlyCreate( VOID );
 
 
 #endif /* __UNITS_H_ */

@@ -9,6 +9,7 @@
 #include <time.h>
 
 #include "anim.h"
+#include "render.h"
 #include "vec.h"
 
 /* Тип представления мяча */
@@ -75,6 +76,48 @@ static VOID PD6_AnimUnitResponse( pd6UNIT_CTRL *Uni, pd6ANIM *Ani )
     Ani->Coef += 0.05;
   if (Ani->JButs[1])
     Ani->Coef -= 0.05;
+
+  /* Camera controling */
+  if (Ani->IsPause)
+  {
+    if (Ani->Keys['O'])
+      PD6_RndCameraMoveDir(&Ani->RndCamera, 0.5);
+    if (Ani->Keys['L'])
+      PD6_RndCameraMoveDir(&Ani->RndCamera, -0.5);
+
+    if (Ani->JY)
+      PD6_RndCameraMoveDir(&Ani->RndCamera, -Ani->JY);
+
+    if (Ani->Keys['A'])
+      PD6_RndCameraMoveRight(&Ani->RndCamera, -2);
+    if (Ani->Keys['D'])
+      PD6_RndCameraMoveRight(&Ani->RndCamera, 2);
+  
+    if (Ani->JX)
+      PD6_RndCameraMoveRight(&Ani->RndCamera, Ani->JX);
+
+    if (Ani->Keys['W'])
+      PD6_RndCameraMoveUp(&Ani->RndCamera, 0.5);
+    if (Ani->Keys['S'])
+     PD6_RndCameraMoveUp(&Ani->RndCamera, -0.5);
+
+    if (Ani->JR)
+      PD6_RndCameraRotateUp(&Ani->RndCamera, -Ani->JR);
+
+    if (Ani->Keys['Q'])
+      PD6_RndCameraRotateUp(&Ani->RndCamera, 2);
+    if (Ani->Keys['E'])
+     PD6_RndCameraRotateUp(&Ani->RndCamera, -2);
+
+    if (Ani->JZ)
+     PD6_RndCameraRotateRight(&Ani->RndCamera, -Ani->JZ);
+    PD6_RndCameraRotateUp(&Ani->RndCamera, (DBL)PD6_MouseWheel);
+
+    if (Ani->Keys['I'])
+      PD6_RndCameraRotateRight(&Ani->RndCamera, 2);
+    if (Ani->Keys['K'])
+      PD6_RndCameraRotateRight(&Ani->RndCamera, -2);
+  }
 } /* End of 'PD6_AnimUnitResponse' function */
 
 /* Функция построения объекта анимации.

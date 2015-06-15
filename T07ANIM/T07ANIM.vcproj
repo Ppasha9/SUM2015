@@ -224,6 +224,10 @@
 							>
 						</File>
 						<File
+							RelativePath=".\MTLLIB.C"
+							>
+						</File>
+						<File
 							RelativePath=".\PRIM.C"
 							>
 						</File>
@@ -237,12 +241,28 @@
 						>
 					</File>
 				</Filter>
+				<Filter
+					Name="Camera system"
+					>
+					<File
+						RelativePath=".\CAMERA.C"
+						>
+					</File>
+					<File
+						RelativePath=".\CAMERA.H"
+						>
+					</File>
+				</Filter>
 			</Filter>
 			<Filter
 				Name="Units module"
 				>
 				<File
 					RelativePath=".\UBALL.C"
+					>
+				</File>
+				<File
+					RelativePath=".\UCAM.C"
 					>
 				</File>
 				<File

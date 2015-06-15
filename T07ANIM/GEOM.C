@@ -69,15 +69,38 @@ VOID PD6_GeomDraw( pd6GEOM *G )
 {
   INT i, loc;
 
+  /* посылаем количество частей */
+  glUseProgram(PD6_RndProg);
+  loc = glGetUniformLocation(PD6_RndProg, "TotalParts");
+  if (loc != -1)
+    glUniform1f(loc, G->NumOfPrimitives);
+  glUseProgram(0);
+
+  /* рисуем непрозрачные объекты */
   for (i = 0; i < G->NumOfPrimitives; i++)
-  {
-    glUseProgram(PD6_RndProg);
-    loc = glGetUniformLocation(PD6_RndProg, "PartNo");
-    if (loc != -1)
-      glUniform1f(loc, i);
-    glUseProgram(0);
-    PD6_PrimDraw(&G->Prims[i]);
-  }
+    if (PD6_MtlLib[G->Prims[i].MtlNo].Kt == 1)
+    {
+      /* посылаем номер текущей части */
+      glUseProgram(PD6_RndProg);
+      loc = glGetUniformLocation(PD6_RndProg, "PartNo");
+      if (loc != -1)
+        glUniform1f(loc, i);
+      glUseProgram(0);
+      PD6_PrimDraw(&G->Prims[i]);
+    }
+
+  /* рисуем прозрачные объекты */
+  for (i = 0; i < G->NumOfPrimitives; i++)
+    if (PD6_MtlLib[G->Prims[i].MtlNo].Kt != 1)
+    {
+      /* посылаем номер текущей части */
+      glUseProgram(PD6_RndProg);
+      loc = glGetUniformLocation(PD6_RndProg, "PartNo");
+      if (loc != -1)
+        glUniform1f(loc, i);
+      glUseProgram(0);
+      PD6_PrimDraw(&G->Prims[i]);
+    }
 } /* End of 'PD6_GeomDraw' function */
 
 /* Функция загрузки геометрического объекта из G3D файла.
@@ -96,6 +119,14 @@ BOOL PD6_GeomLoad( pd6GEOM *G, CHAR *FileName )
   CHAR Sign[4];
   MATR M;
   static CHAR MtlName[300];
+  static CHAR
+    path_buffer[_MAX_PATH],
+    drive[_MAX_DRIVE],
+    dir[_MAX_DIR],
+    fname[_MAX_FNAME],
+    ext[_MAX_EXT];
+
+  _splitpath(FileName, drive, dir, fname, ext);
 
   memset(G, 0, sizeof(pd6GEOM));
   if ((F = fopen(FileName, "rb")) == NULL)
@@ -114,6 +145,10 @@ BOOL PD6_GeomLoad( pd6GEOM *G, CHAR *FileName )
   /* читаем количество примитивов в объекте */
   fread(&n, 4, 1, F);
   fread(MtlName, 1, 300, F);
+
+  /* читаем и загружаем библиотеку материалов */
+  _makepath(path_buffer, drive, dir, MtlName, "");
+  PD6_MtlLoad(path_buffer);
 
   /* читаем примитивы */
   for (i = 0; i < n; i++)
@@ -145,6 +180,7 @@ BOOL PD6_GeomLoad( pd6GEOM *G, CHAR *FileName )
 
     /* заносим в примитив */
     PD6_PrimCreate(&P, PD6_PRIM_TRIMESH, nv, ni, Vert, Ind);
+    P.MtlNo = PD6_MtlFind(MtlName);
 
     free(Vert);
 

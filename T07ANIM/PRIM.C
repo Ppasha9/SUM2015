@@ -128,19 +128,45 @@ VOID PD6_PrimDraw( pd6PRIM *Prim )
   if (loc != -1)
     glUniformMatrix4fv(loc, 1, FALSE, M.A[0]);
 
-  M = MatrMulMatr(PD6_RndMatrWorld, PD6_RndMatrView);
-  loc = glGetUniformLocation(PD6_RndProg, "MatrWV");
+  M = MatrTranspose(MatrInverse(PD6_RndMatrWorld));
+  loc = glGetUniformLocation(PD6_RndProg, "MatrWInverse");
   if (loc != -1)
     glUniformMatrix4fv(loc, 1, FALSE, M.A[0]);
 
-  M = MatrInverse(MatrMulMatr(PD6_RndMatrWorld, PD6_RndMatrView));
-  loc = glGetUniformLocation(PD6_RndProg, "WheelMatr");
+  M = MatrMulMatr(PD6_RndMatrWorld, PD6_RndMatrView);
+  loc = glGetUniformLocation(PD6_RndProg, "MatrWV");
   if (loc != -1)
     glUniformMatrix4fv(loc, 1, FALSE, M.A[0]);
 
   loc = glGetUniformLocation(PD6_RndProg, "Time");
   if (loc != -1)
     glUniform1f(loc, PD6_Anim.Time);
+
+  /* Применение материала */
+  loc = glGetUniformLocation(PD6_RndProg, "Ka");
+  if (loc != -1)
+    glUniform3fv(loc, 1, &PD6_MtlLib[Prim->MtlNo].Ka.X);
+  loc = glGetUniformLocation(PD6_RndProg, "Kd");
+  if (loc != -1)
+    glUniform3fv(loc, 1, &PD6_MtlLib[Prim->MtlNo].Kd.X);
+  loc = glGetUniformLocation(PD6_RndProg, "Ks");
+  if (loc != -1)
+    glUniform3fv(loc, 1, &PD6_MtlLib[Prim->MtlNo].Ks.X);
+  loc = glGetUniformLocation(PD6_RndProg, "Kp");
+  if (loc != -1)
+    glUniform1f(loc, PD6_MtlLib[Prim->MtlNo].Kp);
+  loc = glGetUniformLocation(PD6_RndProg, "Kt");
+  if (loc != -1)
+    glUniform1f(loc, PD6_MtlLib[Prim->MtlNo].Kt);
+
+  loc = glGetUniformLocation(PD6_RndProg, "IsTextureUse");
+  if (PD6_MtlLib[Prim->MtlNo].TexId == 0)
+    glUniform1f(loc, 0);
+  else
+  {
+    glUniform1f(loc, 1);
+    glBindTexture(GL_TEXTURE_2D, PD6_MtlLib[Prim->MtlNo].TexId);
+  }
 
   glPrimitiveRestartIndex(0xFFFFFFFF);
   if (Prim->Type == PD6_PRIM_GRID)

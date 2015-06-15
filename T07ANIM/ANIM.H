@@ -8,6 +8,7 @@
 #define __ANIM_H_
 
 #include "def.h"
+#include "camera.h"
 #include "vec.h"
 
 /* Максимальное количество элементов анимации */
@@ -54,6 +55,8 @@ typedef struct
     JPOV;            /* Переключатель POV - 0..8 */
   DBL
     JX, JY, JZ, JR, JU, JV; /* Оси джойстика (-1.0 .. 1.0*/
+
+  pd6CAMERA RndCamera;
 
   FLT Coef;
 } pd6ANIM;

@@ -89,6 +89,11 @@ BOOL PD6_AnimInit( HWND hWnd )
   PD6_MouseOldX = pt.x;
   PD6_MouseOldY = pt.y;
   GetKeyboardState(PD6_Anim.KeysOld);
+
+  PD6_RndCameraSet(&PD6_Anim.RndCamera, VecSet(60, 60, 60),
+                   VecSet(0, 0, 0),
+                   VecSet(0, 1, 0));
+
   return TRUE;
 } /* End of 'PD6_AnimInit' function */
 

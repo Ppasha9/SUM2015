@@ -8,6 +8,7 @@
 #define __RENDER_H_
 
 #include "vec.h"
+#include "camera.h"
 
 #define GLEW_STATIC
 #include <glew.h>
@@ -60,6 +61,59 @@ UINT PD6_ShaderLoad( CHAR *FileNamePrefix );
 VOID PD6_ShaderFree( UINT PrgId );
 
 /***
+ * Работа с материалами
+ ***/
+
+/* Тип задания материала поверхности */
+typedef struct tagpd6MATERIAL
+{
+  /* Имя материала */
+  CHAR Name[300];
+
+  /* Коэффициенты отражения */
+  VEC Ka, Kd, Ks;
+  FLT Kp; /* Степень "бликовости" */
+
+  /* Коэффициент прозрачности */
+  FLT Kt;
+
+  /* Текстура поверхности */
+  INT TexId;
+} pd6MATERIAL;
+
+/* Глобальная таблица материалов */
+#define PD6_MATERIAL_MAX 300
+extern INT PD6_MtlLibSize;
+extern pd6MATERIAL PD6_MtlLib[PD6_MATERIAL_MAX];
+
+/* Функция добавления материала в библиотеку.
+ * АРГУМЕНТЫ:
+ *   - структура с памаметрами материала:
+ *       pd6MATERIAL *Mtl;
+ * ВОЗВРАЩАЕМОЕ ЗНАЧЕНИЕ:
+ *   (INT) порядковый номер добавленного материала (0 при ошибке).
+ */
+INT PD6_MtlAdd( pd6MATERIAL *Mtl );
+
+/* Функция поиска материала по имени.
+ * АРГУМЕНТЫ:
+ *   - имя материала:
+ *       CHAR *Name;
+ * ВОЗВРАЩАЕМОЕ ЗНАЧЕНИЕ:
+ *   (INT) порядковый номер найденного материала (0 при ошибке).
+ */
+INT PD6_MtlFind( CHAR *Name );
+
+/* Функция загрузки материала из файла (*.MTL).
+ * АРГУМЕНТЫ:
+ *   - имя файла материала:
+ *       CHAR *FileName;
+ * ВОЗВРАЩАЕМОЕ ЗНАЧЕНИЕ:
+ *   (INT) количество загруженных материалов.
+ */
+INT PD6_MtlLoad( CHAR *FileName );
+
+/***
  * Работа с примитивами
  ***/
 
@@ -77,7 +131,8 @@ typedef struct tagpd6PRIM
   INT
     VA,          /* массив вершин */
     VBuf, IBuf,  /* буфера вершин и индексов */
-    NumOfI;      /* количество индексов для вывода примитива */
+    NumOfI,      /* количество индексов для вывода примитива */
+    MtlNo;
 } pd6PRIM;
 
 /* Тип хранения текстурных координат */
