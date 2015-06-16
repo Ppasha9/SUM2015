@@ -16,6 +16,7 @@ typedef struct
   INT W, H;    /* Image size */
   HBITMAP hBm; /* Image handle */
   HDC hDC;     /* Image bitmap device context for drawing */
+  DWORD *Bits; /* Image raw */
 } IMAGE;
 
 /* Load image function.

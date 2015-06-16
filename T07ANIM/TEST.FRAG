@@ -81,9 +81,6 @@ void main( void )
   if (Kt != 1)
     discard;
   
-  if (PartNo < 39)
-    discard;
-
   OutColor = DrawColor * Shade(DrawPosition.xyz, DrawNormal);
 }
 

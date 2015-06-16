@@ -45,11 +45,13 @@ static VOID PD6_AnimUnitInit( pd6UNIT_MODEL *Uni, pd6ANIM *Ani )
 
   //PD6_PrimCreate(&Uni->Pr, PD6_PRIM_TRIMESH, 4, 6, V, I);
 
-  PD6_RndPrimMatrConvert = MatrMulMatr(MatrScale(5, 5, 5), MatrRotateX(-90));
+  PD6_PrimCreateHeightField(&Uni->Pr, VecSet(-5, 0, 5), VecSet(-10, 0, 0), VecSet(0, 0, 10), 1.50, "E:\\SPR09\\HF.BMP");
+
+  //PD6_RndPrimMatrConvert = MatrMulMatr(MatrScale(5, 5, 5), MatrRotateX(-90));
   //PD6_GeomLoad(&Uni->Model, "NISPF.g3d");
 
-  PD6_RndPrimMatrConvert = MatrMulMatr(MatrScale(15, 15, 15), MatrRotateX(0));
-  PD6_GeomLoad(&Uni->Geom, "Q:\\Models\\Avent\\avent.g3d");
+  //PD6_RndPrimMatrConvert = MatrMulMatr(MatrScale(15, 15, 15), MatrRotateX(0));
+  //PD6_GeomLoad(&Uni->Geom, "Q:\\Models\\Avent\\avent.g3d");
 } /* End of 'PD6_AnimUnitInit' function */
 
 /* Функция деинициализации объекта анимации.
@@ -107,7 +109,7 @@ static VOID PD6_AnimUnitRender( pd6UNIT_MODEL *Uni, pd6ANIM *Ani )
 
   glActiveTexture(GL_TEXTURE0);
   glBindTexture(GL_TEXTURE_2D, Uni->TextId);
-  //PD6_PrimDraw(&Uni->Pr);
+  PD6_PrimDraw(&Uni->Pr);
 } /* End of 'PD6_AnimUnitRender' function */
 
 /* Функция создания объекта анимации "модель".

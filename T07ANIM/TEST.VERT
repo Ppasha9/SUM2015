@@ -1,7 +1,7 @@
 /* Filename: TEST.VERT */
 
 // версия языка шейдера
-#version 400
+#version 330
 
 // кто куда приходит
 layout(location = 0) in vec3 InPosition;

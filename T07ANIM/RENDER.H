@@ -201,6 +201,8 @@ VOID PD6_PrimDraw( pd6PRIM *Prim );
  * АРГУМЕНТЫ:
  *   - указатель на примитив:
  *       pd6PRIM *Prim;
+ *   - угловая точка:
+ *       VEC Loc;
  *   - касательные вектора-стороны:
  *       VEC Du, Dv;
  *   - разбиение:
@@ -208,7 +210,7 @@ VOID PD6_PrimDraw( pd6PRIM *Prim );
  * ВОЗВРАЩАЕМОЕ ЗНАЧЕНИЕ:
  *   (BOOL) TRUE при успехе, иначе FALSE.
  */
-BOOL PD6_PrimCreatePlane( pd6PRIM *Prim, VEC Du, VEC Dv, INT N, INT M );
+BOOL PD6_PrimCreatePlane( pd6PRIM *Prim, VEC Loc, VEC Du, VEC Dv, INT N, INT M );
 
 /* Функция создания примитива сфера.
  * АРГУМЕНТЫ:
@@ -224,6 +226,23 @@ BOOL PD6_PrimCreatePlane( pd6PRIM *Prim, VEC Du, VEC Dv, INT N, INT M );
  *   (BOOL) TRUE при успехе, иначе FALSE.
  */
 BOOL PD6_PrimCreateSphere( pd6PRIM *Prim, VEC C, FLT R, INT N, INT M );
+
+/* Функция создания примитива карта высот.
+ * АРГУМЕНТЫ:
+ *   - указатель на примитив:
+ *       pd6PRIM *Prim;
+ *   - угловая точка:
+ *       VEC Loc;
+ *   - касательные вектора-стороны:
+ *       VEC Du, Dv;
+ *   - масштаб по высоте:
+ *       DBL Scale;
+ *   - имя файла с высотами:
+ *       CHAR *FileName;
+ * ВОЗВРАЩАЕМОЕ ЗНАЧЕНИЕ:
+ *   (BOOL) TRUE при успехе, иначе FALSE.
+ */
+BOOL PD6_PrimCreateHeightField( pd6PRIM *Prim, VEC Loc, VEC Du, VEC Dv, DBL Scale, CHAR *FileName );
 
 /* Функция загрузки геометрического объекта.
  * АРГУМЕНТЫ:

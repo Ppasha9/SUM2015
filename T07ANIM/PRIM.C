@@ -6,9 +6,13 @@
 
 #include "anim.h"
 #include "render.h"
+#include "image.h"
 
 /* Матрица изменения примитива при создании */
 MATR PD6_RndPrimMatrConvert = PD6_UNIT_MATR;
+
+/* Цвет новых объектов по умолчанию */
+COLOR PD6_RndPrimDefaultColor = {1, 1, 1, 1};
 
 /* Функция создания примитива.
  * АРГУМЕНТЫ:
@@ -168,6 +172,7 @@ VOID PD6_PrimDraw( pd6PRIM *Prim )
     glBindTexture(GL_TEXTURE_2D, PD6_MtlLib[Prim->MtlNo].TexId);
   }
 
+  glEnable(GL_PRIMITIVE_RESTART);
   glPrimitiveRestartIndex(0xFFFFFFFF);
   if (Prim->Type == PD6_PRIM_GRID)
     glDrawElements(GL_TRIANGLE_STRIP, Prim->NumOfI, GL_UNSIGNED_INT, NULL);
@@ -182,6 +187,8 @@ VOID PD6_PrimDraw( pd6PRIM *Prim )
  * АРГУМЕНТЫ:
  *   - указатель на примитив:
  *       pd6PRIM *Prim;
+ *   - угловая точка:
+ *       VEC Loc;
  *   - касательные вектора-стороны:
  *       VEC Du, Dv;
  *   - разбиение:
@@ -189,8 +196,52 @@ VOID PD6_PrimDraw( pd6PRIM *Prim )
  * ВОЗВРАЩАЕМОЕ ЗНАЧЕНИЕ:
  *   (BOOL) TRUE при успехе, иначе FALSE.
  */
-BOOL PD6_PrimCreatePlane( pd6PRIM *Prim, VEC Du, VEC Dv, INT N, INT M )
+BOOL PD6_PrimCreatePlane( pd6PRIM *Prim, VEC Loc, VEC Du, VEC Dv, INT N, INT M )
 {
+  INT i, j;
+  VEC norm;
+  INT *Ind, *iptr;
+  pd6VERTEX *V, *ptr;
+
+  memset(Prim, 0, sizeof(pd6PRIM));
+
+  if ((V = malloc(sizeof(pd6VERTEX) * N * M +
+                  sizeof(INT) * ((2 * M + 1) * (N - 1)))) == NULL)
+    return FALSE;
+  Ind = (INT *)(V + N * M);
+
+  /* заполняем вершины */
+  norm = VecNormalize(VecCrossVec(Du, Dv));
+  for (ptr = V, i = 0; i < N; i++)
+    for (j = 0; j < M; j++, ptr++)
+    {
+      ptr->P = VecAddVec(Loc,
+                 VecAddVec(VecMulNum(Du, j / (M - 1.0)),
+                           VecMulNum(Dv, i / (N - 1.0))));
+      ptr->C = PD6_RndPrimDefaultColor;
+      ptr->N = norm;
+      ptr->T = UVSet(j / (M - 1.0), i / (N - 1.0));
+    }
+
+  /* заполняем индексы */
+  for (iptr = Ind, i = 0; i < N - 1; i++)
+  {
+    for (j = 0; j < M; j++)
+    {
+      /* верхний */
+      *iptr++ = i * M + j + M;
+      /* нижний */
+      *iptr++ = i * M + j;
+    }
+    /* сохраняем индекс разрыва примитива */
+    *iptr++ = 0xFFFFFFFF;
+  }
+
+  PD6_PrimCreate(Prim, PD6_PRIM_GRID, M * N, (2 * M + 1) * (N - 1), V, Ind);
+
+  free(V);
+
+  return TRUE;
 } /* End of 'PD6_PrimCreatePlane' function */
 
 /* Функция создания примитива сфера.
@@ -208,6 +259,164 @@ BOOL PD6_PrimCreatePlane( pd6PRIM *Prim, VEC Du, VEC Dv, INT N, INT M )
  */
 BOOL PD6_PrimCreateSphere( pd6PRIM *Prim, VEC C, FLT R, INT N, INT M )
 {
+  INT i, j;
+  INT *Ind, *iptr;
+  pd6VERTEX *V, *ptr;
+
+  memset(Prim, 0, sizeof(pd6PRIM));
+
+  if ((V = malloc(sizeof(pd6VERTEX) * N * M +
+                  sizeof(INT) * ((2 * M + 1) * (N - 1)))) == NULL)
+    return FALSE;
+  Ind = (INT *)(V + N * M);
+
+  /* заполняем вершины */
+  for (ptr = V, i = 0; i < N; i++)
+    for (j = 0; j < M; j++, ptr++)
+    {
+      DBL
+        theta = PI * i / (N - 1.0), phi = 2 * PI * j / (M - 1.0),
+        x = sin(theta) * sin(phi),
+        y = cos(theta),
+        z = sin(theta) * cos(phi);
+
+      ptr->P = VecAddVec(C, VecSet(R * x, R * y, R * z));
+      ptr->C = PD6_RndPrimDefaultColor;
+      ptr->N = VecSet(x, y, z);
+      ptr->T = UVSet(j / (M - 1.0), i / (N - 1.0));
+    }
+
+  /* заполняем индексы */
+  for (iptr = Ind, i = 0; i < N - 1; i++)
+  {
+    for (j = 0; j < M; j++)
+    {
+      /* верхний */
+      *iptr++ = i * M + j + M;
+      /* нижний */
+      *iptr++ = i * M + j;
+    }
+    /* сохраняем индекс разрыва примитива */
+    *iptr++ = 0xFFFFFFFF;
+  }
+
+  PD6_PrimCreate(Prim, PD6_PRIM_GRID, M * N, (2 * M + 1) * (N - 1), V, Ind);
+
+  free(V);
+
+  return TRUE;
 } /* End of 'PD6_PrimCreateSphere' function */
+
+/* Функция создания примитива карта высот.
+ * АРГУМЕНТЫ:
+ *   - указатель на примитив:
+ *       pd6PRIM *Prim;
+ *   - угловая точка:
+ *       VEC Loc;
+ *   - касательные вектора-стороны:
+ *       VEC Du, Dv;
+ *   - масштаб по высоте:
+ *       DBL Scale;
+ *   - имя файла с высотами:
+ *       CHAR *FileName;
+ * ВОЗВРАЩАЕМОЕ ЗНАЧЕНИЕ:
+ *   (BOOL) TRUE при успехе, иначе FALSE.
+ */
+BOOL PD6_PrimCreateHeightField( pd6PRIM *Prim, VEC Loc, VEC Du, VEC Dv, DBL Scale, CHAR *FileName )
+{
+  INT i, j;
+  VEC norm;
+  INT *Ind, *iptr;
+  pd6VERTEX *V, *ptr;
+  INT N, M;
+  IMAGE Img;
+
+  memset(Prim, 0, sizeof(pd6PRIM));
+
+  if (!ImageLoad(&Img, FileName))
+    return FALSE;
+  M = Img.W;
+  N = Img.H;
+
+  if ((V = malloc(sizeof(pd6VERTEX) * N * M +
+                  sizeof(INT) * ((2 * M + 1) * (N - 1)))) == NULL)
+    return FALSE;
+  Ind = (INT *)(V + N * M);
+
+  /* заполняем вершины */
+  norm = VecNormalize(VecCrossVec(Du, Dv));
+  for (ptr = V, i = 0; i < N; i++)
+    for (j = 0; j < M; j++, ptr++)
+    {
+      DWORD icolor = ImageGetP(&Img, j, i);
+      DBL
+        r = ((icolor >> 16) & 0xFF) / 255.0,
+        g = ((icolor >> 8) & 0xFF) / 255.0,
+        b = ((icolor >> 0) & 0xFF) / 255.0,
+        H = r * 0.30 + g * 0.59 + b * 0.11;
+
+      ptr->P = VecAddVec(Loc,
+                 VecAddVec(VecAddVec(
+                             VecMulNum(Du, j / (M - 1.0)),
+                             VecMulNum(Dv, i / (N - 1.0))),
+                             VecMulNum(norm, H * Scale)));
+      ptr->C = PD6_RndPrimDefaultColor;
+      ptr->N = norm;
+      ptr->T = UVSet(j / (M - 1.0), i / (N - 1.0));
+    }
+  ImageFree(&Img);
+  /* заполняем индексы */
+  for (iptr = Ind, i = 0; i < N - 1; i++)
+  {
+    for (j = 0; j < M; j++)
+    {
+      /* верхний */
+      *iptr++ = i * M + j + M;
+      /* нижний */
+      *iptr++ = i * M + j;
+    }
+    /* сохраняем индекс разрыва примитива */
+    *iptr++ = 0xFFFFFFFF;
+  }
+
+  /* Вычесление нормалей */
+  
+  /* обнуляем нормали всех вершин */
+  for (i = 0; i < N * M; i++)
+    V[i].N = VecSet(0, 0, 0);
+
+  /* пробегаем по всем треугольникам */
+  for (i = 0; i < N - 1; i++)
+    for (j = 0; j < M - 1; j++)
+    {
+      pd6VERTEX
+        *Vij = V + i * M + j,
+        *Vi1j = V + (i + 1) * M + j,
+        *Vij1 = V + i * M + j + 1,
+        *Vi1j1 = V + (i + 1) * M + j + 1;
+
+      /* верхний треугольник */
+      norm = VecNormalize(VecCrossVec(VecSubVec(Vij->P, Vi1j->P), VecSubVec(Vi1j1->P, Vi1j->P)));
+      Vij->N = VecAddVec(Vij->N, norm);
+      Vi1j->N = VecAddVec(Vi1j->N, norm);
+      Vi1j1->N = VecAddVec(Vi1j1->N, norm);
+
+      /* нижний треугольник */
+      norm = VecNormalize(VecCrossVec(VecSubVec(Vi1j1->P, Vij1->P), VecSubVec(Vij->P, Vij1->P)));
+      Vij->N = VecAddVec(Vij->N, norm);
+      Vij1->N = VecAddVec(Vij1->N, norm);
+      Vi1j1->N = VecAddVec(Vi1j1->N, norm);
+    }
+
+  /* нормируем нормали всех вершин */
+  for (i = 0; i < N * M; i++)
+    V[i].N = VecNormalize(V[i].N);
+
+  PD6_PrimCreate(Prim, PD6_PRIM_GRID, M * N, (2 * M + 1) * (N - 1), V, Ind);
+
+  free(V);
+
+  return TRUE;
+} /* End of 'PD6_PrimCreatePlane' function */
 
 /* END OF 'PRIM.C' FILE */
