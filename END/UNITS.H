@@ -52,6 +52,24 @@ pd6UNIT *PD6_UnitCamFlyCreate( VOID );
  */
 pd6UNIT * PD6_UnitWaterCreate( VOID );
 
+/* Функция создания объекта анимации "небо".
+ * АРГУМЕНТЫ: Нет.
+ * ВОЗВРАЩАЕМОЕ ЗНАЧЕНИЕ:
+ *   (pd6UNIT *) указатель на созданный объект анимации.
+ */
+pd6UNIT * PD6_UnitSkyCreate( VOID );
+
+/* Unit Fly create function.
+ * ARGUMENTS:
+ *   - Postion on world map:
+ *       INT PosXPosY;
+ *   - Angles of rotation:
+ *       DBL RotAngleX, RotAngleY, RotAngleZ;
+ * RETURNS:
+ *   (pd6UNIT_FLY *) - pointer for new animation unit.
+ */
+pd6UNIT *PD6_UnitFlyCreate( INT PosX, INT PosY, INT PosZ );
+
 #endif /* __UNITS_H_ */
 
 /* END OF 'UNITS.H' FILE */

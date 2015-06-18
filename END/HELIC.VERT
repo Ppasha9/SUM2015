@@ -48,12 +48,32 @@ mat4 MatrTranspose( mat4 M )
 
 void main( void )
 {
-  vec4 ThPosition;
-  
-  if (PartNo != 11 && PartNo != 10)
-    gl_Position = MatrWVP * vec4(InPosition, 1);
-  else //if ((PartNo > 9 && PartNo < 12) && InPosition.x != 0 && InPosition.y != 0 && InPosition.z != 0)
+  //if (PartNo != 11 && PartNo != 10)
+  gl_Position = MatrWVP * vec4(InPosition, 1);
+  /*else //if ((PartNo > 9 && PartNo < 12) && InPosition.x != 0 && InPosition.y != 0 && InPosition.z != 0)
   {
+    mat4 Rot;
+
+    Rot[0][0] = cos(900 * Time);
+    Rot[0][1] = 0;
+    Rot[0][2] = -sin(900 * Time);
+    Rot[0][3] = 0;
+
+    Rot[1][0] = 0;
+    Rot[1][1] = 0;
+    Rot[1][2] = 0;
+    Rot[1][3] = 0;
+
+    Rot[2][0] = sin(900 * Time);
+    Rot[2][1] = 0;
+    Rot[2][2] = cos(900 * Time);
+    Rot[2][3] = 0;
+
+    Rot[3][0] = 0;
+    Rot[3][1] = 0;
+    Rot[3][2] = 0;
+    Rot[3][3] = 0;
+
     mat4 MatrTranslate1;
 
     MatrTranslate1[0][0] = 1;
@@ -84,7 +104,7 @@ void main( void )
     
     /*------------------------------*/
 
-    mat4 MatrTranslate2;
+    /*mat4 MatrTranslate2;
 
     MatrTranslate2[0][0] = 1;
     MatrTranslate2[0][1] = 0;
@@ -106,8 +126,8 @@ void main( void )
     MatrTranslate2[3][2] = InPosition.z;
     MatrTranslate2[3][3] = 1;
 
-    gl_Position = MatrWVP * MatrTranslate2 * MatrRot * MatrTranslate1 * vec4(InPosition, 1);
-  }
+    gl_Position = MatrWVP * transpose(MatrTranslate2) * transpose(MatrTranslate1) * vec4(InPosition, 1);
+  }   */
 
   DrawNormal = mat3(MatrWInverse) * InNormal;
   DrawPosition = vec3(MatrWorld * vec4(InPosition, 1));

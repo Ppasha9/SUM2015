@@ -258,6 +258,14 @@
 				Name="Units module"
 				>
 				<File
+					RelativePath=".\FLY.C"
+					>
+				</File>
+				<File
+					RelativePath=".\SKY.C"
+					>
+				</File>
+				<File
 					RelativePath=".\UBALL.C"
 					>
 				</File>

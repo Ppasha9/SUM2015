@@ -234,7 +234,7 @@ VOID PD6_PrimHelicDraw( pd6PRIM *Prim )
   if (loc != -1)
     glUniformMatrix4fv(loc, 1, FALSE, M.A[0]);
 
-  M = MatrRotateY(900 * PD6_Anim.Time);
+  M = MatrRotateY(900 * PD6_Anim.GlobalTime);
   loc = glGetUniformLocation(PD6_HelicProg, "MatrRot");
   if (loc != -1)
     glUniformMatrix4fv(loc, 1, FALSE, M.A[0]);
@@ -247,18 +247,6 @@ VOID PD6_PrimHelicDraw( pd6PRIM *Prim )
   loc = glGetUniformLocation(PD6_HelicProg, "Time");
   if (loc != -1)
     glUniform1f(loc, PD6_Anim.Time);
-
-  loc = glGetUniformLocation(PD6_HelicProg, "YH");
-  if (loc != -1)
-    glUniform3fv(loc, 1, &YH.X);
-
-  loc = glGetUniformLocation(PD6_HelicProg, "XH");
-  if (loc != -1)
-    glUniform3fv(loc, 1, &XH.X);
-
-  loc = glGetUniformLocation(PD6_HelicProg, "ZH");
-  if (loc != -1)
-    glUniform3fv(loc, 1, &ZH.X);
   /* ----------------------------------------- */
 
   /* Применение материала */

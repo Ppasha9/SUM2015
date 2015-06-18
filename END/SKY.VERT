@@ -1,4 +1,4 @@
-/* Filename: TEST.VERT */
+/* Filename: SKY.VERT */
 
 // версия языка шейдера
 #version 330
@@ -19,6 +19,7 @@ uniform mat4 MatrWV;
 uniform mat4 MatrWVInverse;
 uniform mat4 MatrWInverse;
 uniform mat4 MatrRot;
+uniform mat4 MatrHelic;
 uniform float Time;
 
 // выходные параметры
@@ -29,7 +30,7 @@ out vec2 DrawTexCoord;
 
 void main( void )
 {
-  gl_Position = MatrWVP * vec4(InPosition / 2 + vec3(0, 1 * sin(Time + 0.1 * InPosition.x), 1), 1);
+  gl_Position = MatrWVP * vec4(InPosition / 2, 1);
   DrawNormal = mat3(MatrWInverse) * InNormal;
   DrawPosition = vec3(MatrWorld * vec4(InPosition, 1));
   DrawColor = InColor;

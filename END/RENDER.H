@@ -45,11 +45,6 @@ extern MATR PD6_HelicMatr;
 /* Шейдер по умолчанию */
 extern UINT PD6_RndProg, PD6_WaterProg, PD6_HelicProg;
 
-extern VEC
-  YH,
-  XH,
-  ZH;
-
 /* Функция загрузки шейдеров для одной программы.
  * АРНУМЕНТЫ:
  *   - префикс имени файла:

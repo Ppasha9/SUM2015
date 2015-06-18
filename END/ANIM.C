@@ -8,6 +8,8 @@
 #include "render.h"
 #include <stdio.h>
 #include <mmsystem.h>
+
+
 #pragma comment(lib, "winmm")
 
 /* Получение значения оси джойстика */
@@ -92,6 +94,7 @@ BOOL PD6_AnimInit( HWND hWnd )
   PD6_MouseOldY = pt.y;
   GetKeyboardState(PD6_Anim.KeysOld);
 
+  /* Инициализайия камеры */
   PD6_RndCameraSet(&PD6_Anim.RndCamera, VecSet(30, 30, 0),
                    VecSet(0, 0, 0),
                    VecSet(0, 1, 0));
@@ -115,7 +118,13 @@ VOID PD6_AnimClose( VOID )
   }
 
   PD6_ShaderFree(PD6_RndProg);
+  PD6_ShaderFree(PD6_HelicProg);
+  PD6_ShaderFree(PD6_WaterProg);
+
   PD6_RndProg = 0;
+  PD6_HelicProg = 0;
+  PD6_WaterProg = 0;
+
   wglMakeCurrent(NULL, NULL);
   wglDeleteContext(PD6_Anim.hGLRC);
   ReleaseDC(PD6_Anim.hWnd, PD6_Anim.hDC);
@@ -278,6 +287,7 @@ VOID PD6_AnimRender( VOID )
       PD6_ShaderFree(PD6_RndProg);
       PD6_ShaderFree(PD6_WaterProg);
       PD6_ShaderFree(PD6_HelicProg);
+
       PD6_RndProg = PD6_ShaderLoad("TEST");
       PD6_WaterProg = PD6_ShaderLoad("WATER");
       PD6_HelicProg = PD6_ShaderLoad("HELIC");
