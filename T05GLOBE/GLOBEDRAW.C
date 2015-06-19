@@ -155,12 +155,8 @@ VOID GlobeDraw( HDC hDC, INT W, INT H )
         x = Grid[i][j].X + W / 2,
         y = Grid[i][j].Y + H / 2;
 
-      /*x1 = j * PicW / (M + 1);
-      y1 = i * PicH / (N + 1);
-      SetDCBrushColor(hDC, RGB(Pic[(y1 * PicW + PicW - x1) * 3 + 2], Pic[(y1 * PicW + PicW - x1) * 3 + 1], Pic[(y1 * PicW + PicW - x1) * 3]));*/
       SetDCBrushColor(hDC, ImageGetP(&GlobeImg, ix, iy));
       DrawQuad(hDC, Grid[i][j], Grid[i][j + 1], Grid[i + 1][j + 1], Grid[i + 1][j], W, H);
-      //Ellipse(hDC, x - 5, y - 5, x + 5, y + 5);
     }
 } /* End of 'GlobeDraw' function */
 
