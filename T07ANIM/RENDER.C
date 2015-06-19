@@ -136,7 +136,7 @@ INT PD6_TextureLoad( CHAR *FileName )
   /* строим DIB - device-independed-bitmap секция */
   bih.biSize = sizeof(BITMAPINFOHEADER);
   bih.biWidth = bm.bmWidth;
-  bih.biHeight = -bm.bmHeight;
+  bih.biHeight = bm.bmHeight;
   bih.biBitCount = 32;
   bih.biCompression = BI_RGB;
   bih.biPlanes = 1;
