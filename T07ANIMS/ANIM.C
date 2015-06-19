@@ -138,7 +138,7 @@ VOID PD6_AnimResize( INT W, INT H )
   else
     PD6_RndHp = (DBL)H / W * 3, PD6_RndWp = 3;
 
-  PD6_RndMatrProj = MatrFrustum(-PD6_RndWp / 2, PD6_RndWp / 2, -PD6_RndHp / 2, PD6_RndHp / 2, PD6_RndProjDist * 2, 3000);
+  PD6_RndMatrProj = MatrFrustum(-PD6_RndWp / 2, PD6_RndWp / 2, -PD6_RndHp / 2, PD6_RndHp / 2, PD6_RndProjDist, 3000);
 } /* End of 'PD6_AnimResize' function */
 
 /* Функция построения кадра анимации.

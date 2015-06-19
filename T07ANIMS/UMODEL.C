@@ -27,12 +27,12 @@ typedef struct tagpd6UNIT_MODEL
  */
 static VOID PD6_AnimUnitInit( pd6UNIT_MODEL *Uni, pd6ANIM *Ani )
 {
-  pd6VERTEX V[]=
+  pd6VERTEX V[]= 
   {
-    {{2, -1.5, 6}, {0, 0}, {0, 0, 1}, {1, 1, 1, 1}},
-    {{1, 2, -1.5}, {5, 0}, {0, 0, 1}, {1, 0, 1, 1}},
-    {{2, 1, 0},    {0, 5}, {0, 0, 1}, {1, 1, 0, 1}},
-    {{1, 1, -2.0}, {5, 5}, {0, 0, 1}, {1, 1, 0, 1}},
+    {{0, 0, 0}, {0, 0}, {0, 0, 1}, {1, 1, 1, 1}},
+    {{1, 0, 0}, {5, 0}, {0, 0, 1}, {1, 0, 1, 1}},
+    {{0, 1, 0}, {0, 5}, {0, 0, 1}, {1, 1, 0, 1}},
+    {{1, 1, 0}, {5, 5}, {0, 0, 1}, {1, 1, 0, 1}},
   };
   INT I[] = {0, 1, 2, 2, 1, 3};
   BYTE txt[2][2][3] =
@@ -41,20 +41,17 @@ static VOID PD6_AnimUnitInit( pd6UNIT_MODEL *Uni, pd6ANIM *Ani )
     {{0, 0, 0}, {255, 255, 255}}
   };
 
+  //Uni->TextId = PD6_TextureLoad("ElphSkin.bmp");
+
+  //PD6_PrimCreate(&Uni->Pr, PD6_PRIM_TRIMESH, 4, 6, V, I);
+
+  //PD6_PrimCreateHeightField(&Uni->Pr, VecSet(-5, 0, 5), VecSet(-10, 0, 0), VecSet(0, 0, 10), 1.50, "E:\\SPR09\\HF.BMP");
+
   //PD6_RndPrimMatrConvert = MatrMulMatr(MatrScale(5, 5, 5), MatrRotateX(-90));
-
-  //PD6_PrimCreateSphere(&Uni->Pr, VecSet(0, 0, 0), 3, 30, 30);
-
-  //Uni->TextId = PD6_TextureLoad("E:\\SPR09\\HF1TEX.BMP");
-  PD6_PrimCreateHeightField(&Uni->Pr, VecSet(-10, 0, 10), VecSet(20, 0, 0), VecSet(0, 0, 20), 2.0, "E:\\SPR09\\HF.BMP");
-
   //PD6_GeomLoad(&Uni->Model, "NISPF.g3d");
 
-  //PD6_RndPrimMatrConvert = MatrMulMatr(MatrScale(2, 2, 2), MatrRotateX(-90));
-  //PD6_GeomLoad(&Uni->Geom, "E:\\SPR09\\C172\\c172.g3d");
-
-  //PD6_RndPrimMatrConvert = MatrMulMatr(MatrScale(1, 1, 1), MatrRotateX(0));
-  //PD6_GeomLoad(&Uni->Geom[1], "E:\\SPR09\\Nissan_Pathfinder\\NISPF.g3d");
+  PD6_RndPrimMatrConvert = MatrMulMatr(MatrScale(15, 15, 15), MatrRotateX(-90));
+  PD6_GeomLoad(&Uni->Geom, "E:\\SPR09\\Nissan_Pathfinder\\NISPF.g3d");
 } /* End of 'PD6_AnimUnitInit' function */
 
 /* Функция деинициализации объекта анимации.
@@ -69,7 +66,6 @@ static VOID PD6_AnimUnitClose( pd6UNIT_MODEL *Uni, pd6ANIM *Ani )
 {
   PD6_GeomFree(&Uni->Model);
   PD6_GeomFree(&Uni->Geom);
-  //PD6_GeomFree(&Uni->Geom[1]);
   PD6_PrimFree(&Uni->Pr);
 } /* End of 'PD6_AnimUnitClose' function */
 
@@ -101,7 +97,7 @@ static VOID PD6_AnimUnitRender( pd6UNIT_MODEL *Uni, pd6ANIM *Ani )
       PD6_RndMatrWorld =
         MatrMulMatr(MatrMulMatr(MatrMulMatr(
           MatrTranslate(Ani->JX * 59, Ani->JY * 88, 0),
-          MatrScale(5, 5, 5)),
+          MatrScale(0.5, 0.5, 0.5)),
           MatrRotateY(30 * Ani->Time + Ani->JR * 180)),
           MatrTranslate(j * 1.30, -5, i * 1.30 + 100 * Ani->JZ));
       glColor3d(i & 1, j & 1, 1 - ((i & 1) + (j & 1)) / 2);
@@ -109,9 +105,8 @@ static VOID PD6_AnimUnitRender( pd6UNIT_MODEL *Uni, pd6ANIM *Ani )
     }
   //PD6_RndMatrWorld = MatrRotateY(30 * Ani->Time);
   //MatrMulMatr(MatrRotateZ(30 * sin(Ani->Time * 3.0)), MatrRotateY(30 * Ani->Time));
-  //PD6_GeomDraw(&Uni->Geom[1]);
+  //PD6_GeomDraw(&Uni->Geom);
 
-  PD6_RndMatrWorld = MatrIdentity();
   glActiveTexture(GL_TEXTURE0);
   glBindTexture(GL_TEXTURE_2D, Uni->TextId);
   PD6_PrimDraw(&Uni->Pr);

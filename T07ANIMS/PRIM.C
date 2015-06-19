@@ -4,11 +4,6 @@
  * LAST UPDATE: 13.06.2015
  */
 
-#include <time.h>
-#include <math.h>
-
-#define PD6_PI 3.1415
-
 #include "anim.h"
 #include "render.h"
 #include "image.h"
@@ -138,7 +133,7 @@ VOID PD6_PrimDraw( pd6PRIM *Prim )
     glUniformMatrix4fv(loc, 1, FALSE, M.A[0]);
 
   M = MatrTranspose(MatrInverse(PD6_RndMatrWorld));
-  loc = glGetUniformLocation(PD6_RndProg, "MatrWorldInverseTranspose");
+  loc = glGetUniformLocation(PD6_RndProg, "MatrWInverse");
   if (loc != -1)
     glUniformMatrix4fv(loc, 1, FALSE, M.A[0]);
 
