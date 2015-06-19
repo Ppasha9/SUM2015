@@ -33,7 +33,7 @@ static VOID PD6_AnimUnitInit( pd6UNIT_SKY *Uni, pd6ANIM *Ani )
   pd6MATERIAL Mtl = PD6_MtlLib[3];
 
   PD6_PrimCreateSphere(&Uni->Sky, VecSet(-600, 0, 600), 900, 200, 200);
-  Mtl.TexId = PD6_TextureLoad("E:\\SPR09\\sky1.bmp");
+  Mtl.TexId = PD6_TextureLoad("sky1.bmp");
   Uni->Sky.MtlNo = Uni->TextId = PD6_MtlAdd(&Mtl);
 } /* End of 'PD6_AnimUnitInit' function */
 

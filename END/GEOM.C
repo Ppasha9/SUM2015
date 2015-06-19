@@ -101,6 +101,8 @@ VOID PD6_GeomDraw( pd6GEOM *G )
       glUseProgram(0);
       PD6_PrimDraw(&G->Prims[i]);
     }
+
+  PD6_RndMatrWorld = MatrIdentity();
 } /* End of 'PD6_GeomDraw' function */
 
 /* Функция отображения геометрического объекта - вертолета.
@@ -145,6 +147,8 @@ VOID PD6_GeomHelicDraw( pd6GEOM *G )
       glUseProgram(0);
       PD6_PrimHelicDraw(&G->Prims[i]);
     }
+
+  PD6_RndMatrWorld = MatrIdentity();
 } /* End of 'PD6_GeomHelicDraw' function */
 
 /* Функция загрузки геометрического объекта из G3D файла.

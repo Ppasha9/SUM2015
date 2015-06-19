@@ -12,14 +12,16 @@ typedef struct tagpd6UNIT_MODEL
   PD6_UNIT_BASE_FIELDS;
 
   pd6GEOM Geom;
-  pd6GEOM GeomTree[8];
+
+
+  INT NumOfTrees;
+  pd6GEOM GeomTree[100];
+
   pd6PRIM Pr;
   INT TextId;
 } pd6UNIT_MODEL;
 
 MATR PD6_HelicMatr = PD6_UNIT_MATR;
-FLT ShiftX = 0.0, ShiftY = 0.0, ShiftZ = 0.0;
-MATR PD6_MatrCam = PD6_UNIT_MATR;
 
 /* Функция инициализации объекта анимации.
  * АРГУМЕНТЫ:
@@ -34,8 +36,10 @@ static VOID PD6_AnimUnitInit( pd6UNIT_MODEL *Uni, pd6ANIM *Ani )
   pd6MATERIAL Mtl = PD6_MtlLib[0];
   INT i;
 
+  Uni->NumOfTrees = 20;
+
   PD6_RndPrimMatrConvert = MatrIdentity();
-  PD6_PrimCreateHeightField(&Uni->Pr, VecSet(0, 0, 0), VecSet(-1200, 0, 0), VecSet(0, 0, 1200), 180.0, "E:\\SPR09\\Test2.BMP");
+  PD6_PrimCreateHeightField(&Uni->Pr, VecSet(0, 0, 0), VecSet(-1200, 0, 0), VecSet(0, 0, 1200), 180.0, "Test2.BMP");
   Mtl.TexId = PD6_TextureLoad("HF1TEX.BMP");
   Uni->Pr.MtlNo = Uni->TextId = PD6_MtlAdd(&Mtl);
 
@@ -44,8 +48,8 @@ static VOID PD6_AnimUnitInit( pd6UNIT_MODEL *Uni, pd6ANIM *Ani )
   //PD6_RndPrimMatrConvert = MatrMulMatr(MatrScale(5, 5, 5), MatrRotateX(-90));
   //PD6_GeomLoad(&Uni->Model, "NISPF.g3d");
 
-  for (i = 0; i < 8; i++)
-    PD6_GeomLoad(&Uni->GeomTree[i], "E:\\SPR09\\Tree\\Tree\\Tree.g3d");
+  for (i = 0; i < Uni->NumOfTrees; i++)
+    PD6_GeomLoad(&Uni->GeomTree[i], "Tree\\Tree\\Tree.g3d");
 } /* End of 'PD6_AnimUnitInit' function */
 
 /* Функция деинициализации объекта анимации.
@@ -62,7 +66,7 @@ static VOID PD6_AnimUnitClose( pd6UNIT_MODEL *Uni, pd6ANIM *Ani )
 
   PD6_PrimFree(&Uni->Pr);
 
-  for (i = 0; i < 8; i++)
+  for (i = 0; i < Uni->NumOfTrees; i++)
     PD6_GeomFree(&Uni->GeomTree[i]);
 } /* End of 'PD6_AnimUnitClose' function */
 
@@ -81,7 +85,6 @@ static VOID PD6_AnimUnitRender( pd6UNIT_MODEL *Uni, pd6ANIM *Ani )
   PD6_RndMatrView = MatrView(Ani->RndCamera.Loc,
                              Ani->RndCamera.At,
                              Ani->RndCamera.Up);
-  PD6_MatrCam = MatrTranslate(Ani->RndCamera.Loc.X, Ani->RndCamera.Loc.Y, Ani->RndCamera.Loc.Z - 30);
 
   for (i = 0; i < 1; i++)
     for (j = 0; j < 1; j++)
@@ -120,7 +123,28 @@ static VOID PD6_AnimUnitRender( pd6UNIT_MODEL *Uni, pd6ANIM *Ani )
   PD6_RndMatrWorld = MatrMulMatr(MatrTranslate(-430, 12, 1500), MatrScale(0.3, 0.3, 0.3));
   PD6_GeomDraw(&Uni->GeomTree[7]);
 
-  PD6_RndMatrWorld = MatrMulMatr(MatrTranslate(-500, 12, 200), MatrScale(0.3, 0.3, 0.3));
+  PD6_RndMatrWorld = MatrMulMatr(MatrTranslate(-460, 12, 1460), MatrScale(0.3, 0.3, 0.3));
+  PD6_GeomDraw(&Uni->GeomTree[8]);
+
+  PD6_RndMatrWorld = MatrMulMatr(MatrTranslate(-420, 12, 1560), MatrScale(0.3, 0.3, 0.3));
+  PD6_GeomDraw(&Uni->GeomTree[9]);
+
+  PD6_RndMatrWorld = MatrMulMatr(MatrTranslate(-530, 12, 1360), MatrScale(0.3, 0.3, 0.3));
+  PD6_GeomDraw(&Uni->GeomTree[10]);
+
+  PD6_RndMatrWorld = MatrMulMatr(MatrTranslate(-400, 16, 1200), MatrScale(0.3, 0.3, 0.3));
+  PD6_GeomDraw(&Uni->GeomTree[11]);
+
+  PD6_RndMatrWorld = MatrMulMatr(MatrTranslate(-430, 20, 500), MatrScale(0.3, 0.3, 0.3));
+  PD6_GeomDraw(&Uni->GeomTree[12]);
+
+  PD6_RndMatrWorld = MatrMulMatr(MatrTranslate(-530, 20, 450), MatrScale(0.3, 0.3, 0.3));
+  PD6_GeomDraw(&Uni->GeomTree[13]);
+
+  PD6_RndMatrWorld = MatrMulMatr(MatrTranslate(-470, 12, 560), MatrScale(0.3, 0.3, 0.3));
+  PD6_GeomDraw(&Uni->GeomTree[14]);
+
+  PD6_RndMatrWorld = MatrMulMatr(MatrTranslate(-400, 12, 200), MatrScale(0.3, 0.3, 0.3));
   PD6_GeomDraw(&Uni->GeomTree[2]);
 
   PD6_RndMatrWorld = MatrIdentity();

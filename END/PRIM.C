@@ -32,6 +32,9 @@ COLOR PD6_RndPrimDefaultColor = {1, 1, 1, 1};
 VOID PD6_PrimCreate( pd6PRIM *Prim, pd6PRIM_TYPE Type,
                      INT NoofV, INT NoofI, pd6VERTEX *Vertices, INT *Indices)
 {
+  memset(Prim, 0, sizeof(pd6PRIM));
+  Prim->M = MatrIdentity();
+
   Prim->Type = Type;
   Prim->NumOfI = NoofI;
   /* Создаем буфера OpenGL */
@@ -104,6 +107,8 @@ VOID PD6_PrimDraw( pd6PRIM *Prim )
 {
   INT loc;
   MATR M;
+
+  PD6_RndMatrWorld = MatrMulMatr(Prim->M, PD6_RndMatrWorld);
 
   PD6_RndMatrWorldViewProj = MatrMulMatr(MatrMulMatr(PD6_RndMatrWorld, PD6_RndMatrView), PD6_RndMatrProj);
 
@@ -192,6 +197,8 @@ VOID PD6_PrimHelicDraw( pd6PRIM *Prim )
 {
   INT loc;
   MATR M;
+
+  PD6_RndMatrWorld = MatrMulMatr(Prim->M, PD6_RndMatrWorld);
 
   PD6_RndMatrWorldViewProj = MatrMulMatr(MatrMulMatr(PD6_RndMatrWorld, PD6_RndMatrView), PD6_RndMatrProj);
 
@@ -296,6 +303,8 @@ VOID PD6_PrimWaterDraw( pd6PRIM *Prim )
 {
   INT loc;
   MATR M;
+
+  PD6_RndMatrWorld = MatrMulMatr(Prim->M, PD6_RndMatrWorld);
 
   PD6_RndMatrWorldViewProj = MatrMulMatr(MatrMulMatr(PD6_RndMatrWorld, PD6_RndMatrView), PD6_RndMatrProj);
 

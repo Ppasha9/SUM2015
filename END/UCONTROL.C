@@ -64,7 +64,7 @@ static VOID PD6_AnimUnitInit( pd6UNIT_CTRL *Uni, pd6ANIM *Ani )
   alGenBuffers(1, Uni->ABuf);
 
   /* загружаем звук в буфер */
-  alutLoadWAVFile("E:\\SPR09\\a1.wav", &format, &mem, &size, &freq, &loop);
+  alutLoadWAVFile("a1.wav", &format, &mem, &size, &freq, &loop);
   alBufferData(Uni->ABuf[0], format, mem, size, freq);
   alutUnloadWAV(format, mem, size, freq);
 
@@ -84,7 +84,7 @@ static VOID PD6_AnimUnitInit( pd6UNIT_CTRL *Uni, pd6ANIM *Ani )
 
   Uni->Head = Uni->V = 1.0;
 
-  PD6_GeomLoad(&Uni->Geom, "E:\\SPR09\\Mirage\\Mirage\\Mirage.g3d");
+  PD6_GeomLoad(&Uni->Geom, "Mirage\\Mirage\\Mirage.g3d");
   //alSourcei(Uni->ASrc[1], AL_BUFFER, Uni->ABuf[1]); /* закрепл€ем буфер за источником */
   //alSourcef(Uni->ASrc[1], AL_PITCH, 1);             /* скорость воспроизведени€: 1.0 - обычна€*/
   //alSourcef(Uni->ASrc[1], AL_GAIN, 1);              /* громкость: 1.0 Ц обычна€ */
@@ -153,9 +153,9 @@ static VOID PD6_AnimUnitResponse( pd6UNIT_CTRL *Uni, pd6ANIM *Ani )
       PD6_RndCameraRotateRight(&Ani->RndCamera, -1);
   }
 
-  if (Ani->JButs[0] || Ani->Keys['G'])
+  if (Ani->Keys['G'])
     glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-  if (Ani->JButs[2] || Ani->Keys['H'])
+  if (Ani->Keys['H'])
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
   glEnable(GL_DEPTH_TEST);
 
@@ -167,20 +167,23 @@ static VOID PD6_AnimUnitResponse( pd6UNIT_CTRL *Uni, pd6ANIM *Ani )
   if (!Ani->IsPause)
   {
     Uni->Head += 300 * Ani->JR * Ani->DeltaTime;
-    Dir = PointTransform(VecSet(0, 0, 1), MatrRotateY(Uni->Head));
+    Dir = VectorTransform(VecSet(0, 0, 1), MatrRotateY(Uni->Head));
     Uni->V += -3 * 30 * Ani->JY * Ani->DeltaTime;
     Uni->V *= max(1 - Ani->GlobalDeltaTime, 0);
     Uni->Pos = VecAddVec(Uni->Pos, VecMulNum(Dir, Uni->V * Ani->DeltaTime));
 
-    Uni->Pos = VecAddVec(Uni->Pos, VecMulNum(PointTransform(Dir, MatrRotateY(-90)), 30 * Ani->JX * Ani->DeltaTime));
+    Uni->Pos = VecAddVec(Uni->Pos, VecMulNum(VectorTransform(Dir, MatrRotateY(-90)), 30 * Ani->JX * Ani->DeltaTime));
 
-    Uni->Pos.Y += 200 * (Ani->JButs[1] - Ani->JButs[2]) * Ani->DeltaTime;
+
+    Uni->Pos.Y += 100 * (Ani->JButs[1] - Ani->JButs[2]) * Ani->DeltaTime;
 
     At = VecSubVec(Uni->Pos, VecMulNum(Dir, 12));
     At.Y += 6.30;
 
     Move = VecSubVec(At, Ani->RndCamera.Loc);
     Ani->RndCamera.Loc = VecAddVec(Ani->RndCamera.Loc, VecMulNum(Move, Ani->GlobalDeltaTime));
+
+    Ani->RndCamera.At = Uni->Pos;
 
     PD6_RndMatrView = MatrView(Ani->RndCamera.Loc, Uni->Pos, VecSet(0, 1, 0));
 /*    PD6_GeomHelicDraw(&Uni->Geom, Uni->Pos);*/
@@ -222,7 +225,10 @@ static VOID PD6_AnimUnitRender( pd6UNIT_CTRL *Uni, pd6ANIM *Ani )
     SetWindowText(Ani->hWnd, Buf);
   }
 
-  PD6_RndMatrWorld = MatrMulMatr(MatrRotateY(Uni->Head), MatrTranslate(Uni->Pos.X, Uni->Pos.Y, Uni->Pos.Z));
+  PD6_RndMatrWorld = MatrMulMatr(
+                        MatrRotateZ(180),
+                        MatrMulMatr(MatrRotateX(-90), MatrMulMatr(MatrRotateY(Uni->Head),
+                        MatrTranslate(Uni->Pos.X, Uni->Pos.Y, Uni->Pos.Z))));
   PD6_GeomHelicDraw(&Uni->Geom);
   /*
   SetTextColor(Ani->hDC, RGB(255, 255, 255));
