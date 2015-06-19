@@ -182,14 +182,6 @@
 				RelativePath=".\MAIN.C"
 				>
 			</File>
-			<File
-				RelativePath=".\UCONTROL.C"
-				>
-			</File>
-			<File
-				RelativePath=".\VEC.C"
-				>
-			</File>
 			<Filter
 				Name="Obj handle"
 				>
@@ -234,6 +226,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\UCONTROL.C"
+					>
+				</File>
+				<File
 					RelativePath=".\UMODEL.C"
 					>
 				</File>
@@ -262,6 +258,18 @@
 					>
 				</File>
 			</Filter>
+			<Filter
+				Name="MATH"
+				>
+				<File
+					RelativePath=".\VEC.C"
+					>
+				</File>
+				<File
+					RelativePath=".\VEC.H"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="Header Files"
@@ -270,10 +278,6 @@
 			>
 			<File
 				RelativePath=".\DEF.H"
-				>
-			</File>
-			<File
-				RelativePath=".\VEC.H"
 				>
 			</File>
 		</Filter>
